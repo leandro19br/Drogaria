@@ -1,0 +1,115 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
+<!-- substituir a TAG HTML por ui composition para que utilize o template  -->
+<ui:composition xmlns="http://www.w3.org/1999/xhtml"
+	xmlns:h="http://xmlns.jcp.org/jsf/html"
+	xmlns:p="http://primefaces.org/ui"
+	xmlns:f="http://xmlns.jcp.org/jsf/core"
+	xmlns:ui="http://xmlns.jcp.org/jsf/facelets"
+	template="/templates/modelo.xhtml">
+	
+	<!-- 	ui:define casa com o ui:insert, pega um código e injeta no ui:insert -->
+	<ui:define name="conteudo">
+	
+	<h:form id="frmListagem">
+		<p:panel header="Cidade - Listagem">
+			<p:dataTable id="tabela" emptyMessage="Nenhum Registro Encontrado"
+				paginator="true" value="#{cidade.cidades}" var="cursorCidade"
+				rows="5">
+				
+<!-- 				Botão Novo -->
+				
+				<f:facet name="header">
+					<p:commandButton value="Novo" oncomplete="PF('dlgCidade').show()"
+						actionListener="#{cidade.novo}" update=":frmCadastro:pnlCadastro">
+						<!-- 						resolver o problema de estado inválido ao invalidar o campo obrigatório os campos ficam vermelho mesmo após clicar em novo -->
+						<f:actionListener
+							type="org.omnifaces.eventlistener.ResetInputAjaxActionListener" />
+					</p:commandButton>
+				</f:facet>
+				
+				
+				<p:column headerText="Nome" sortBy="#{cursorCidade.nome}"
+					filterBy="#{cursorCidade.nome}">
+					<h:outputText value="#{cursorCidade.nome}" />
+				</p:column>
+				
+				<p:column headerText="Estado">
+					<h:outputText value="#{cursorCidade.estado.nome}" />
+					<h:outputText value=" - " />
+					<h:outputText value="#{cursorCidade.estado.sigla}" />
+				</p:column>
+				<p:column headerText="Opções">
+
+					<!-- 				Botão Excluir -->
+
+					<p:commandButton icon="ui-icon-trash"
+						actionListener="#{cidade.excluir}"
+						update=":msg :frmListagem:tabela">
+						<p:confirm header="Confirmação" message="Deseja EXCLUIR a cidade?"
+							icon="ui-icon-alert" />
+						<f:attribute name="cidadeSelecionado" value="#{cursorCidade}" />
+					</p:commandButton>
+
+					<!-- 					Botão Editar 
+Obs: não esquecer de criar em todos  os domínios os métodos hashCode e equals
+ -->
+
+					<p:commandButton icon="ui-icon-pencil"
+						actionListener="#{cidade.editar}"
+						oncomplete="PF('dlgCidade').show()"
+						update=":msg :frmCadastro:pnlCadastro">
+						<f:attribute name="cidadeSelecionado" value="#{cursorCidade}" />
+						<!-- 						resolver o problema de estado inválido ao invalidar o campo obrigatório os campos ficam vermelho mesmo após clicar em novo -->
+						<f:actionListener
+							type="org.omnifaces.eventlistener.ResetInputAjaxActionListener" />
+					</p:commandButton>
+				</p:column>
+			</p:dataTable>
+			
+			<!-- 			Diálogo de Confirmação -->
+			<p:confirmDialog global="true">
+				<p:commandButton value="Sim" type="button"
+					styleClass="ui-confirmdialog-yes" icon="ui-icon-check" />
+				<p:commandButton value="Não" type="button"
+					styleClass="ui-confirmdialog-no" icon="ui-icon-close" />
+			</p:confirmDialog>
+
+		</p:panel>
+	</h:form>
+
+	<p:dialog header="Cidade - Cadastro" widgetVar="dlgCidade"
+		draggable="false" resizable="false" modal="true" closable="false">
+		<h:form id="frmCadastro">
+			<p:panelGrid id="pnlCadastro" columns="3">
+
+				<p:outputLabel value="Nome:" for="nome" />
+				<p:inputText id="nome" maxlength="50" size="30"
+					value="#{cidade.cidade.nome}" required="true"
+					requiredMessage="O campo Nome é obrigatório !"/>
+
+				<!-- Trabalhando com com conversor genérico do Onminifaces para SelectItens converter="omnifaces.SelectItemsConverter"
+				* Trabalhando com FOR + nome do ID do input se o campo for obrigatório será colocado um asterisco automático -->
+
+				<p:outputLabel value="Estado:" for="estado" />
+				<p:selectOneMenu id="estado" filter="true"
+					value="#{cidade.cidade.estado}"
+					converter="omnifaces.SelectItemsConverter" required="true"
+					requiredMessage="O campo estado é obrigatório !">
+					<f:selectItem noSelectionOption="true"
+						itemLabel="Selecione uma Opção" />
+					<f:selectItems value="#{cidade.estados}" var="cursorEstado"
+						itemValue="#{cursorEstado}"
+						itemLabel="#{cursorEstado.nome} - #{cursorEstado.sigla} " />
+				</p:selectOneMenu>
+
+			</p:panelGrid>
+			<h:panelGrid columns="2">
+				<p:commandButton value="Salvar" actionListener="#{cidade.salvar}"
+					update=":msg :frmListagem:tabela :frmCadastro:pnlCadastro" />
+				<p:commandButton value="Fechar" oncomplete="PF('dlgCidade').hide()" />
+			</h:panelGrid>
+		</h:form>
+	</p:dialog>
+	</ui:define>
+</ui:composition>

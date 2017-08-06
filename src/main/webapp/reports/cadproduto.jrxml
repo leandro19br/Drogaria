@@ -1,0 +1,115 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!-- Created with Jaspersoft Studio version 6.4.0.final using JasperReports Library version 6.4.1  -->
+<jasperReport xmlns="http://jasperreports.sourceforge.net/jasperreports" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:schemaLocation="http://jasperreports.sourceforge.net/jasperreports http://jasperreports.sourceforge.net/xsd/jasperreport.xsd" name="cadproduto" pageWidth="595" pageHeight="842" columnWidth="555" leftMargin="20" rightMargin="20" topMargin="20" bottomMargin="20" uuid="9397a74c-3a79-45f3-8d18-ee934d41062b">
+	<property name="com.jaspersoft.studio.data.sql.tables" value=""/>
+	<property name="com.jaspersoft.studio.data.defaultdataadapter" value=" Data Adapter "/>
+	<parameter name="PRODUTO_DESC" class="java.lang.String"/>
+	<parameter name="FABRICANTE_DESC" class="java.lang.String"/>
+	<queryString language="SQL">
+		<![CDATA[SELECT "Produto".descricao AS pdescricao,
+	"Produto".preco,
+	"Produto".quantidade,
+	"Fabricante".descricao AS fdescricao
+FROM "Produto"
+	INNER JOIN "Fabricante" ON 
+	 "Produto".fabricante_codigo = "Fabricante".codigo 
+WHERE 
+	 "Produto".descricao LIKE $P{PRODUTO_DESC} 
+	 AND "Fabricante".descricao LIKE $P{FABRICANTE_DESC} 
+ORDER BY "Produto".descricao ASC,
+	"Fabricante".descricao ASC]]>
+	</queryString>
+	<field name="pdescricao" class="java.lang.String"/>
+	<field name="preco" class="java.math.BigDecimal"/>
+	<field name="quantidade" class="java.lang.Short"/>
+	<field name="fdescricao" class="java.lang.String"/>
+	<title>
+		<band height="80" splitType="Stretch">
+			<image hAlign="Center" vAlign="Bottom">
+				<reportElement x="0" y="10" width="550" height="70" uuid="18e91da4-ee5d-40de-b006-f730f9152ad1"/>
+				<imageExpression><![CDATA["logo.png"]]></imageExpression>
+			</image>
+		</band>
+	</title>
+	<pageHeader>
+		<band height="35" splitType="Stretch">
+			<staticText>
+				<reportElement x="0" y="2" width="560" height="30" uuid="9e7a0c97-f768-4d4e-bea8-987f9b21cff5"/>
+				<textElement textAlignment="Center" markup="styled">
+					<font size="18" isBold="true"/>
+				</textElement>
+				<text><![CDATA[Relatório de Produto]]></text>
+			</staticText>
+		</band>
+	</pageHeader>
+	<columnHeader>
+		<band height="30" splitType="Stretch">
+			<staticText>
+				<reportElement x="0" y="0" width="80" height="30" uuid="c6d23442-0af7-4002-9fa3-95e10928e5c4"/>
+				<textElement textAlignment="Center">
+					<font size="12" isBold="true"/>
+				</textElement>
+				<text><![CDATA[Descrição]]></text>
+			</staticText>
+			<staticText>
+				<reportElement x="80" y="0" width="100" height="30" uuid="53b7254d-f066-4c14-ae3a-e63c0c747a8c"/>
+				<textElement textAlignment="Center">
+					<font size="12" isBold="true"/>
+				</textElement>
+				<text><![CDATA[Preço]]></text>
+			</staticText>
+			<staticText>
+				<reportElement x="180" y="0" width="100" height="30" uuid="75f9b5cb-2d36-4c65-95f7-5916db9b50d9"/>
+				<textElement textAlignment="Center">
+					<font size="12" isBold="true"/>
+				</textElement>
+				<text><![CDATA[Quantidade]]></text>
+			</staticText>
+			<staticText>
+				<reportElement x="280" y="0" width="100" height="30" uuid="ec0cf5f4-d457-43fc-a43a-950de3ef4080"/>
+				<textElement textAlignment="Center">
+					<font size="12" isBold="true"/>
+				</textElement>
+				<text><![CDATA[Fabricante]]></text>
+			</staticText>
+		</band>
+	</columnHeader>
+	<detail>
+		<band height="30" splitType="Stretch">
+			<textField>
+				<reportElement x="0" y="0" width="80" height="30" uuid="9cb67958-8769-47bd-b5d6-fbb5beb30aac"/>
+				<textElement textAlignment="Center"/>
+				<textFieldExpression><![CDATA[$F{pdescricao}]]></textFieldExpression>
+			</textField>
+			<textField pattern="0.00">
+				<reportElement x="80" y="0" width="93" height="30" uuid="49c8da75-4c2f-482d-9a1d-5a1aceaa43ac"/>
+				<textElement textAlignment="Center"/>
+				<textFieldExpression><![CDATA[$F{preco}]]></textFieldExpression>
+			</textField>
+			<textField>
+				<reportElement x="180" y="0" width="100" height="30" uuid="7f40f372-09d3-45b3-b965-3d8c30c38f11"/>
+				<textElement textAlignment="Center"/>
+				<textFieldExpression><![CDATA[$F{quantidade}]]></textFieldExpression>
+			</textField>
+			<textField>
+				<reportElement x="280" y="0" width="100" height="30" uuid="f8f96819-7168-4849-9d2e-02a566e71812"/>
+				<textElement textAlignment="Center"/>
+				<textFieldExpression><![CDATA[$F{fdescricao}]]></textFieldExpression>
+			</textField>
+		</band>
+	</detail>
+	<pageFooter>
+		<band height="51" splitType="Stretch">
+			<staticText>
+				<reportElement x="-10" y="21" width="560" height="30" uuid="629becfc-a88b-4807-b040-500a7e38ae29"/>
+				<box>
+					<topPen lineWidth="1.0"/>
+				</box>
+				<textElement textAlignment="Center">
+					<font size="12" isBold="true"/>
+				</textElement>
+				<text><![CDATA[Rua Aclimação, 692 Jd. Lavapes CEP - 06700-553 Cotia - SP]]></text>
+			</staticText>
+		</band>
+	</pageFooter>
+</jasperReport>

@@ -1,0 +1,122 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
+<!-- substituir a TAG HTML por ui composition para que utilize o template  -->
+<ui:composition xmlns="http://www.w3.org/1999/xhtml"
+	xmlns:h="http://xmlns.jcp.org/jsf/html"
+	xmlns:p="http://primefaces.org/ui"
+	xmlns:f="http://xmlns.jcp.org/jsf/core"
+	xmlns:ui="http://xmlns.jcp.org/jsf/facelets"
+	template="/templates/modelo.xhtml">
+
+	<!-- 	ui:define casa com o ui:insert, pega um código e injeta no ui:insert -->
+	<ui:define name="conteudo">
+		
+	<h:form id="frmListagem">
+		
+		<p:panel id="pnlListagem" header="Usuário - Listagem">
+			<p:dataTable id="tabela" emptyMessage="Nenhum Registro Encontrado"
+				paginator="true" value="#{usuario.usuarios}" var="cursorUsuario" rows="5">
+				
+<!-- 				Botão Novo -->
+				
+				<f:facet name="header">
+					<p:commandButton value="Novo" oncomplete="PF('dlgUsuario').show()" actionListener="#{usuario.novo}" update=":msg :frmCadastro:pnlCadastro"
+					 >
+						<!-- 						resolver o problema de estado inválido ao invalidar o campo obrigatório os campos ficam vermelho mesmo após clicar em novo -->
+						<f:actionListener
+							type="org.omnifaces.eventlistener.ResetInputAjaxActionListener" />
+					</p:commandButton>
+				</f:facet>
+
+				<p:column headerText="Nome" filterBy="#{cursorUsuario.pessoa.nome}" sortBy="#{cursorUsuario.pessoa.nome}">
+					<h:outputText value="#{cursorUsuario.pessoa.nome}" />
+				</p:column>
+				
+					
+				<p:column headerText="CPF" filterBy="#{cursorUsuario.pessoa.cpf}" sortBy="#{cursorUsuario.pessoa.cpf}">
+					<h:outputText value="#{cursorUsuario.pessoa.cpf}" />
+				</p:column>
+					
+				<p:column headerText="Tipo">
+					<h:outputText value="#{cursorUsuario.tipoFormatado}" />
+				</p:column>
+
+				<p:column headerText="Ativo">
+					<h:outputText value="#{cursorUsuario.ativoFormatado}" disabled="true" />
+				</p:column>
+				
+<!-- 				Botão Opções -->
+				
+				<p:column headerText="Opções">
+				
+					<!-- 					Botão Excluir -->
+
+					<p:commandButton icon="ui-icon-trash" actionListener="#{usuario.excluir}" update=":msg :frmListagem:tabela">
+						<p:confirm header="Confirmação" message="Deseja EXCLUIR o Usuário ?"
+							icon="ui-icon-alert" />
+						<f:attribute name="usuarioSelecionado" value="#{cursorUsuario}" />
+					</p:commandButton>
+					
+<!-- 					Botão Editar -->
+
+					<p:commandButton icon="ui-icon-pencil" actionListener="#{usuario.editar}" oncomplete="PF('dlgUsuario').show()" update=":msg :frmCadastro:pnlCadastro">
+					<f:attribute name="usuarioSelecionado" value="#{cursorUsuario}" />
+						<!-- 						resolver o problema de estado inválido ao invalidar o campo obrigatório os campos ficam vermelho mesmo após clicar em novo -->
+						<f:actionListener
+							type="org.omnifaces.eventlistener.ResetInputAjaxActionListener" />
+					</p:commandButton>
+					
+
+				</p:column>
+
+			</p:dataTable>
+			
+			<!-- 			Diálogo de Confirmação -->
+			
+			<p:confirmDialog global="true">
+				<p:commandButton value="Sim" type="button"
+					styleClass="ui-confirmdialog-yes" icon="ui-icon-check" />
+				<p:commandButton value="Não" type="button"
+					styleClass="ui-confirmdialog-no" icon="ui-icon-close" />
+			</p:confirmDialog>
+						
+			
+		</p:panel>
+	</h:form>
+
+	<p:dialog header="Usuário - Cadastro" widgetVar="dlgUsuario"
+		draggable="false" resizable="false" modal="true" closable="false">
+		<h:form id="frmCadastro">
+			<p:panelGrid id="pnlCadastro" columns="2">
+
+				<p:outputLabel for="pessoa" value="Pessoa:" />
+				<p:selectOneMenu id="pessoa" filter="true" value="#{usuario.usuario.pessoa}" required="true" converter="omnifaces.SelectItemsConverter" requiredMessage="'Pessoa' é um Campo Obrigatório !">
+					<f:selectItem noSelectionOption="true" itemLabel="Selecione uma Opção" />
+					<f:selectItems value="#{usuario.pessoas}" var="cursorPessoa" itemValue="#{cursorPessoa}" itemLabel="#{cursorPessoa.nome} - #{cursorPessoa.cpf}"/>
+				</p:selectOneMenu>
+
+				<p:outputLabel for="senha" value="Senha:" />
+				<p:password id="senha" maxlength="8" size="10" value="#{usuario.usuario.senha}" required="true" requiredMessage="'Senha' é um Campo Obrigatório !" validatorMessage="Informe uma senha de no mínimo 6 caracteres !">
+					<f:validateLength minimum="6" maximum="8" />
+				</p:password>
+				
+				<p:outputLabel for="tipo" value="Tipo:" />
+				<p:selectOneRadio id="tipo" value="#{usuario.usuario.tipo}" required="true" requiredMessage="'Tipo' é Campo Obrigatório">
+					<f:selectItem itemValue="A" itemLabel="Administrador"/>
+					<f:selectItem itemValue="B" itemLabel="Balconista"/>
+					<f:selectItem itemValue="G" itemLabel="Gerente"/>
+				</p:selectOneRadio>
+				
+
+				<p:outputLabel for="ativo" value="Ativo:" />
+				<p:selectBooleanCheckbox id="ativo" value="#{usuario.usuario.ativo}" required="true" requiredMessage="'Ativo' é um Campo Obrigatório !"/>
+
+			</p:panelGrid>
+			<h:panelGrid columns="2">
+				<p:commandButton value="Salvar" actionListener="#{usuario.salvar}" update=":msg :frmListagem:tabela :frmCadastro:pnlCadastro"/>
+				<p:commandButton value="Fechar" oncomplete="PF('dlgUsuario').hide()" />
+			</h:panelGrid>
+		</h:form>
+	</p:dialog>
+</ui:define>
+</ui:composition>

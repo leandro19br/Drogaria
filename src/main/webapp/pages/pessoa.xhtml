@@ -1,0 +1,171 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
+<!-- substituir a TAG HTML por ui composition para que utilize o template  -->
+<ui:composition xmlns="http://www.w3.org/1999/xhtml"
+	xmlns:h="http://xmlns.jcp.org/jsf/html"
+	xmlns:p="http://primefaces.org/ui"
+	xmlns:f="http://xmlns.jcp.org/jsf/core"
+	xmlns:ui="http://xmlns.jcp.org/jsf/facelets"
+	template="/templates/modelo.xhtml">
+
+	<!-- 	ui:define casa com o ui:insert, pega um código e injeta no ui:insert -->
+	<ui:define name="conteudo">
+	
+	<h:form id="frmListagem">
+		<p:panel header="Pessoa - Listagem">
+			<p:dataTable id="tabela" emptyMessage="Nenhum Registro Encontrado"
+				paginator="true" value="#{pessoa.pessoas}" var="cursorPessoa" rows="5">
+				
+<!-- 				Botão Novo -->
+				
+				<f:facet name="header">
+					<p:commandButton value="Novo" oncomplete="PF('dlgPessoa').show()" actionListener="#{pessoa.novo}" update=":frmCadastro:pnlCadastro" >
+						<!-- 						resolver o problema de estado inválido ao invalidar o campo obrigatório os campos ficam vermelho mesmo após clicar em novo -->
+						<f:actionListener
+							type="org.omnifaces.eventlistener.ResetInputAjaxActionListener" />
+					</p:commandButton>
+				</f:facet>
+				
+				<p:column headerText="Nome" filterBy="#{cursorPessoa.nome}" sortBy="#{cursorPessoa.nome}">
+					<h:outputText value="#{cursorPessoa.nome}" />
+				</p:column>
+				
+				<p:column headerText="CPF" filterBy="#{cursorPessoa.cpf}" sortBy="#{cursorPessoa.cpf}">
+					<h:outputText value="#{cursorPessoa.cpf}" />
+				</p:column>
+				
+				<p:column headerText="RG" filterBy="#{cursorPessoa.rg}" sortBy="#{cursorPessoa.rg}">
+					<h:outputText value="#{cursorPessoa.rg}" />
+				</p:column>
+				
+				<p:column headerText="Rua" filterBy="#{cursorPessoa.rua}" sortBy="#{cursorPessoa.rua}">
+					<h:outputText value="#{cursorPessoa.rua}" />
+				</p:column>
+				
+				<p:column headerText="Numero" filterBy="#{cursorPessoa.numero}" sortBy="#{cursorPessoa.numero}">
+					<h:outputText value="#{cursorPessoa.numero}" />
+				</p:column>
+				
+				<p:column headerText="Bairro" filterBy="#{cursorPessoa.bairro}" sortBy="#{cursorPessoa.bairro}">
+					<h:outputText value="#{cursorPessoa.bairro}" />
+				</p:column>
+				
+				<p:column headerText="CEP" filterBy="#{cursorPessoa.cep}" sortBy="#{cursorPessoa.cep}">
+					<h:outputText value="#{cursorPessoa.cep}" />
+				</p:column>
+				
+				<p:column headerText="Telefone" filterBy="#{cursorPessoa.telefone}" sortBy="#{cursorPessoa.telefone}">
+					<h:outputText value="#{cursorPessoa.telefone}" />
+				</p:column>
+				
+				<p:column headerText="Celular" filterBy="#{cursorPessoa.celular}" sortBy="#{cursorPessoa.celular}">
+					<h:outputText value="#{cursorPessoa.celular}" />
+				</p:column>
+				
+				<p:column headerText="E-mail" filterBy="#{cursorPessoa.email}" sortBy="#{cursorPessoa.email}">
+					<h:outputText value="#{cursorPessoa.email}" />
+				</p:column>
+				
+				<p:column headerText="Cidade">
+					<h:outputFormat value="#{cursorPessoa.cidade.nome}" />
+				</p:column>
+				
+				<p:column headerText="Opções">
+				
+				<!-- 					Botão Excluir -->
+
+					<p:commandButton icon="ui-icon-trash" actionListener="#{pessoa.excluir}" update=":msg :frmListagem:tabela">
+						<p:confirm header="Confirmação" message="Deseja EXCLUIR a Pessoa ?"
+							icon="ui-icon-alert" />
+						<f:attribute name="pessoaSelecionado" value="#{cursorPessoa}" />
+					</p:commandButton>
+					
+<!-- 					Botão Editar -->
+
+					<p:commandButton icon="ui-icon-pencil" actionListener="#{pessoa.editar}" oncomplete="PF('dlgPessoa').show()" update=":msg :frmCadastro:pnlCadastro">
+					<f:attribute name="pessoaSelecionado" value="#{cursorPessoa}" />
+						<!-- 						resolver o problema de estado inválido ao invalidar o campo obrigatório os campos ficam vermelho mesmo após clicar em novo -->
+						<f:actionListener
+							type="org.omnifaces.eventlistener.ResetInputAjaxActionListener" />
+					</p:commandButton>
+					
+				</p:column>
+
+			</p:dataTable>
+			
+			<!-- 			Diálogo de Confirmação -->
+			
+			<p:confirmDialog global="true">
+				<p:commandButton value="Sim" type="button"
+					styleClass="ui-confirmdialog-yes" icon="ui-icon-check" />
+				<p:commandButton value="Não" type="button"
+					styleClass="ui-confirmdialog-no" icon="ui-icon-close" />
+			</p:confirmDialog>
+						
+		</p:panel>
+	</h:form>
+
+	<p:dialog header="Pessoa - Cadastro" widgetVar="dlgPessoa"
+		draggable="false" resizable="false" modal="true" closable="false">
+		<h:form id="frmCadastro">
+			<p:panelGrid id="pnlCadastro" columns="2">
+				
+				<p:outputLabel value="Nome:" for="nome" />
+				<p:inputText id="nome" maxlength="50" size="30" value="#{pessoa.pessoa.nome}" required="true" requiredMessage="'Nome' Obrigatório" />
+				
+				<p:outputLabel value="CPF:" for="cpf" />
+				<p:inputMask mask="999.999.999-99" id="cpf" size="15" value="#{pessoa.pessoa.cpf}" required="true" requiredMessage="'CPF' Obrigatório"/> 
+				
+				<p:outputLabel value="RG:" for="rg" />
+				<p:inputMask mask="99.999.999-9" id="rg" size="15" value="#{pessoa.pessoa.rg}" required="true" requiredMessage="'RG' Obrigatório" />
+				
+				<p:outputLabel value="Rua:" for="rua" />
+				<p:inputText id="rua" maxlength="50" size="30" value="#{pessoa.pessoa.rua}" required="true" requiredMessage="'Rua Obrigatório'" />
+				
+				<p:outputLabel value="Complemento:" for="complemento" />
+				<p:inputText id="complemento" maxlength="50" size="30" value="#{pessoa.pessoa.complemento}" required="true" requiredMessage="'Rua Obrigatório'" />
+				
+				<p:outputLabel value="Número:" for="numero" />
+				<p:inputText id="numero" maxlength="10" size="30" value="#{pessoa.pessoa.numero}" required="true" requiredMessage="'Número' Obrigatório" />
+				
+				<p:outputLabel value="Bairro:" for="bairro"/>
+				<p:inputText id="bairro" maxlength="30" size="30" value="#{pessoa.pessoa.bairro}" required="true" requiredMessage="'Bairro' Obrigatório" />
+				
+				<p:outputLabel value="CEP:" for="cep" />
+				<p:inputText id="cep" maxlength="8" size="10" value="#{pessoa.pessoa.cep}" required="true" requiredMessage="'CEP' Obrigatório" />
+				
+				<p:outputLabel value="Telefone:" for="tel" />
+				<p:inputMask mask="(99)9999-9999"  id="tel" maxlength="30" size="30" value="#{pessoa.pessoa.telefone}" required="true" requiredMessage="'Telefone' Obrigatório" />
+				
+				<p:outputLabel value="Celular:" for="cel" />
+				<p:inputMask mask="(99)99999-9999" id="cel" size="30" value="#{pessoa.pessoa.celular}" required="true" requiredMessage="'Celular' Obrigatório" />
+				
+				<p:outputLabel value="Email:" for="email" />
+				<p:inputText id="email" maxlength="30" size="30" value="#{pessoa.pessoa.email}" required="true" requiredMessage="'E-mail' Obrigatório" />
+				
+				<p:outputLabel for="estado" value="Estado:"  />
+				<p:selectOneMenu id="estado" filter="true" converter="omnifaces.SelectItemsConverter" value="#{pessoa.estado}">
+					<f:selectItem noSelectionOption ="true" itemLabel="Selecione uma Opção"/>
+					<f:selectItems value="#{pessoa.estados}" var="cursorEstado"
+					itemValue="#{cursorEstado}" itemLabel="#{cursorEstado.nome}"/>
+<!-- 					será atualizado o componete cidade com update=":frmCadastro:cidade -->
+					<p:ajax listener="#{pessoa.popular}" update=":frmCadastro:cidade"/>
+				</p:selectOneMenu>
+											
+				<p:outputLabel for="cidade" value="Cidade:"  />
+				<p:selectOneMenu id="cidade" value="#{pessoa.pessoa.cidade}" filter="true" converter="omnifaces.SelectItemsConverter" required="true" requiredMessage="'Cidade' Obrigatório">
+					<f:selectItem noSelectionOption ="true" itemLabel="Selecione uma Opção"/>
+					<f:selectItems value="#{pessoa.cidades}" var="cursorCidade"
+					itemValue="#{cursorCidade}" itemLabel="#{cursorCidade.nome}"/>
+				</p:selectOneMenu>
+			
+											
+			</p:panelGrid>
+			<h:panelGrid columns="2">
+				<p:commandButton value="Salvar" actionListener="#{pessoa.salvar}" update=":msg :frmListagem:tabela :frmCadastro:pnlCadastro" />
+				<p:commandButton value="Fechar" oncomplete="PF('dlgPessoa').hide()" />
+			</h:panelGrid>
+		</h:form>
+	</p:dialog>
+</ui:define>
+</ui:composition>

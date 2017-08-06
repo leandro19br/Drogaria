@@ -1,0 +1,171 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
+<!-- substituir a TAG HTML por ui composition para que utilize o template  -->
+<ui:composition xmlns="http://www.w3.org/1999/xhtml"
+	xmlns:h="http://xmlns.jcp.org/jsf/html"
+	xmlns:p="http://primefaces.org/ui"
+	xmlns:f="http://xmlns.jcp.org/jsf/core"
+	xmlns:ui="http://xmlns.jcp.org/jsf/facelets"
+	template="/templates/modelo.xhtml">
+
+	<!-- 	ui:define casa com o ui:insert, pega um código e injeta no ui:insert -->
+	<ui:define name="conteudo">
+
+	<h:form id="frm">
+		<!-- 		Painel de Produtos -->
+		<p:panel header="Produtos - Listagem">
+			<p:dataTable id="tblProduto"
+				emptyMessage="Nenhum Registro Encontrado" paginator="true"
+				paginatorPosition="bottom" value="#{vendaBeam.produtos}"
+				var="cursorProduto" rows="3">
+
+				<p:column headerText="Descrição" sortBy="#{cursorProduto.descricao}"
+					filterBy="#{cursorProduto.descricao}">
+					<h:outputText value="#{cursorProduto.descricao}" />
+				</p:column>
+
+				<p:column headerText="Quantidade"
+					sortBy="#{cursorProduto.quantidade}"
+					filterBy="#{cursorProduto.quantidade}">
+					<h:outputText value="#{cursorProduto.quantidade}" />
+				</p:column>
+
+				<p:column headerText="Preço" sortBy="#{cursorProduto.preco}"
+					filterBy="#{cursorProduto.preco}">
+					<h:outputText value="#{cursorProduto.preco}">
+						<f:convertNumber locale="pt_BR" minFractionDigits="2" />
+					</h:outputText>
+				</p:column>
+
+				<p:column headerText="Fabricante">
+					<h:outputText value="#{cursorProduto.fabricante.descricao}" />
+				</p:column>
+
+				<p:column headerText="Opções">
+
+					<p:commandButton icon="ui-icon-plus"
+						actionListener="#{vendaBeam.adicionar}"
+						update=":frm:tblCesta :frm:pnlFinalizacao">
+						<f:attribute name="produtoSelecionado" value="#{cursorProduto}" />
+					</p:commandButton>
+				</p:column>
+			</p:dataTable>
+		</p:panel>
+
+		<!-- 		Painel Cesta de Compras -->
+
+		<p:panel header="Cesta de Compras">
+			<p:dataTable id="tblCesta" emptyMessage="Nenhum Registro Encontrado"
+				paginator="true" value="#{vendaBeam.itensVenda}" var="cursorItem"
+				rows="3">
+
+				<p:column headerText="Descrição">
+					<h:outputText value="#{cursorItem.produto.descricao}" />
+				</p:column>
+
+				<p:column headerText="Preço Un.">
+					<h:outputText value="#{cursorItem.produto.preco}">
+						<f:convertNumber locale="pt_BR" minFractionDigits="2" />
+					</h:outputText>
+				</p:column>
+
+				<p:column headerText="Quantidade">
+					<h:outputText value="#{cursorItem.quantidade}" />
+				</p:column>
+
+				<p:column headerText="Valor Parc.">
+					<h:outputText value="#{cursorItem.valorParcial}">
+						<f:convertNumber locale="pt_BR" minFractionDigits="2" />
+					</h:outputText>
+				</p:column>
+
+				<p:column headerText="Opções">
+					<p:commandButton icon="ui-icon-minus"
+						actionListener="#{vendaBeam.remover}"
+						update=":msg :frm:tblCesta :frm:pnlFinalizacao">
+						<f:attribute name="itemSelecionado" value="#{cursorItem}" />
+					</p:commandButton>
+				</p:column>
+			</p:dataTable>
+
+
+		</p:panel>
+
+		<!-- 		total Parcial -->
+
+		<p:panel header="Finalização">
+			<p:panelGrid id="pnlFinalizacao" columns="3">
+				<p:outputLabel value="Total: R$" />
+				<h:outputText value="#{vendaBeam.venda.valorTotal}">
+					<f:convertNumber locale="pt_BR" minFractionDigits="2" />
+				</h:outputText>
+				<p:commandButton value="Finalizar"
+					actionListener="#{vendaBeam.finalizar}"
+					oncomplete="PF('dlgFinalizar').show();"
+					update=":msg :frmFinalizar:pnlFinalizar">
+					<!-- 						resolver o problema de estado inválido ao invalidar o campo obrigatório os campos ficam vermelho mesmo após clicar em novo -->
+					<f:actionListener
+						type="org.omnifaces.eventlistener.ResetInputAjaxActionListener" />
+				</p:commandButton>
+			</p:panelGrid>
+		</p:panel>
+	</h:form>
+
+	<!-- 	Diálogo para finalizar a venda -->
+
+	<p:dialog header="Finalizar Venda" widgetVar="dlgFinalizar"
+		draggable="false" resizable="false" modal="true" closable="false">
+
+		<h:form id="frmFinalizar">
+
+			<p:panelGrid id="pnlFinalizar" columns="2">
+
+				<p:outputLabel for="funcionario" value="Funcionário" />
+				<p:selectOneMenu id="funcionario" filter="true" filterMatchMode="contains"
+					value="#{vendaBeam.venda.funcionario}"
+					converter="omnifaces.SelectItemsConverter" required="true"
+					requiredMessage="'Funcionário' Obrigatório">
+					<f:selectItem noSelectionOption="true"
+						itemLabel="Selecione uma Opção" />
+					<f:selectItems value="#{vendaBeam.funcionarios}"
+						var="cursorFuncionario" itemValue="#{cursorFuncionario}"
+						itemLabel="#{cursorFuncionario.pessoa.cpf} - #{cursorFuncionario.pessoa.nome}" />
+				</p:selectOneMenu>
+
+
+				<p:outputLabel for="cliente" value="Cliente" />
+				<p:selectOneMenu id="cliente" filter="true" filterMatchMode="contains"
+					value="#{vendaBeam.venda.cliente}"
+					converter="omnifaces.SelectItemsConverter" required="true"
+					requiredMessage="'Cliente' Obrigatório">
+					<f:selectItem noSelectionOption="true"
+						itemLabel="Selecione uma Opção" />
+					<f:selectItems value="#{vendaBeam.clientes}" var="cursorCliente"
+						itemValue="#{cursorCliente}"
+						itemLabel="#{cursorCliente.pessoa.cpf} - #{cursorCliente.pessoa.nome} " />
+				</p:selectOneMenu>
+
+				<p:outputLabel value="Valor total" />
+				<h:outputText value="#{vendaBeam.venda.valorTotal}">
+					<f:convertNumber locale="pt_BR" minFractionDigits="2" />
+				</h:outputText>
+
+				<p:outputLabel value="Horário" />
+				<h:outputText value="#{vendaBeam.venda.horario}">
+					<f:convertDateTime pattern="dd/MM/yy HH:mm" locale="pt_BR"
+						timeZone="America/Sao_Paulo" />
+					<!-- formatação da hora -->
+				</h:outputText>
+
+			</p:panelGrid>
+
+			<p:panelGrid columns="2">
+				<p:commandButton value="Salvar" actionListener="#{vendaBeam.salvar}"
+					oncomplete="PF('dlgFinalizar').hide();" update=":msg :frm:tblProduto :frm:tblCesta :frm:pnlFinalizacao" />
+				<p:commandButton value="Fechar"
+					oncomplete="PF('dlgFinalizar').hide();" />
+			</p:panelGrid>
+		</h:form>
+	</p:dialog>
+</ui:define>
+</ui:composition>

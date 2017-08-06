@@ -1,0 +1,128 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
+<html xmlns="http://www.w3.org/1999/xhtml"
+	xmlns:h="http://xmlns.jcp.org/jsf/html"
+	xmlns:p="http://primefaces.org/ui"
+	xmlns:f="http://xmlns.jcp.org/jsf/core">
+<h:head>
+	<meta http-equiv="Content-Type" content="text/html; charset=UTF-8" />
+	<title>Vendas</title>
+</h:head>
+<h:body>
+	<p:growl id="msg" />
+	<h:form id="frmListagem">
+		<p:panel id="pnlListagem" header="Vendas - Listagem">
+			<p:dataTable id="tabela" emptyMessage="Nenhum Registro Encontrado"
+				value="#{vendaBean.vendas}" var="cursorVenda" paginator="true"
+				rows="5">
+
+				<!-- 				Botão Salvar -->
+
+				<f:facet name="header">
+					<p:commandButton value="Novo" oncomplete="PF('dlgVenda').show()" actionListener="#{vendaBean.novo}" update=":msg :frmCadastro:pnlCadastro" >
+					<!-- 						resolver o problema de estado inválido ao invalidar o campo obrigatório os campos ficam vermelho mesmo após clicar em novo -->
+						<f:actionListener
+							type="org.omnifaces.eventlistener.ResetInputAjaxActionListener" />
+					</p:commandButton>
+				</f:facet>
+
+				<p:column headerText="Data da Venda"
+					filterBy="#{cursorVenda.dataVenda}"
+					sortBy="#{cursorVenda.dataVenda}">
+					<h:outputText value="#{cursorVenda.dataVenda}">
+						<f:convertDateTime locale="pt_BR"/>
+					</h:outputText>
+				</p:column>
+
+				<p:column headerText="Valor total">
+					<h:outputText value="#{cursorVenda.valorTotal}">
+						<f:convertNumber locale="pt_BR" minFractionDigits="2"/>
+					</h:outputText>
+				</p:column>
+
+				<p:column headerText="Cliente">
+					<h:outputText value="#{cursorVenda.cliente.pessoa.nome}" />
+				</p:column>
+
+				<p:column headerText="Funcionario">
+					<h:outputText value="#{cursorVenda.funcionario.pessoa.nome}" />
+				</p:column>
+
+				<p:column headerText="Opções">
+
+					<!-- 					Botão Excluir -->
+
+					<p:commandButton icon="ui-icon-trash"
+						actionListener="#{vendaBean.excluir}"
+						update=":msg :frmListagem:tabela">
+						<p:confirm header="Confirmação"
+							message="Deseja EXCLUIR a Venda ?" icon="ui-icon-alert" />
+						<f:attribute name="vendaSelecionado" value="#{cursorVenda}" />
+					</p:commandButton>
+
+					<!-- 					Botão Editar -->
+
+					<p:commandButton icon="ui-icon-pencil"
+						actionListener="#{vendaBean.editar}"
+						oncomplete="PF('dlgvenda').show()"
+						update=":msg :frmCadastro:pnlCadastro">
+						<f:attribute name="vendaSelecionado" value="#{cursorVenda}" />
+						<!-- 						resolver o problema de estado inválido ao invalidar o campo obrigatório os campos ficam vermelho mesmo após clicar em novo -->
+						<f:actionListener
+							type="org.omnifaces.eventlistener.ResetInputAjaxActionListener" />
+					</p:commandButton>
+
+				</p:column>
+			</p:dataTable>
+
+			<!-- 			Diálogo de Confirmação -->
+
+			<p:confirmDialog global="true">
+				<p:commandButton value="Sim" type="button"
+					styleClass="ui-confirmdialog-yes" icon="ui-icon-check" />
+				<p:commandButton value="Não" type="button"
+					styleClass="ui-confirmdialog-no" icon="ui-icon-close" />
+			</p:confirmDialog>
+		</p:panel>
+	</h:form>
+
+	<p:dialog header="Venda - Cadastro" widgetVar="dlgVenda"
+		draggable="false" resizable="false" modal="true" closable="false">
+		<h:form id="frmCadastro">
+			<p:panelGrid id="pnlCadastro" columns="2">
+
+
+				<p:outputLabel for="cliente" value="Cliente:" />
+				<p:selectOneMenu id="cliente" filter="true" value="#{vendaBean.venda.cliente}" converter="omnifaces.SelectItemsConverter" required="true"
+				requiredMessage="'Cliente' é Obrigatório" >
+					<f:selectItem noSelectionOption="true" itemLabel="Selecione uma Opção" />
+					<f:selectItems value="#{vendaBean.clientes}" var="cursorVenda" itemValue="#{cursorVenda}" itemLabel="#{cursorVenda.pessoa.nome}"/>
+				</p:selectOneMenu>
+
+				<p:outputLabel for="funcionario" value="Funcionario:" />
+				<p:selectOneMenu id="funcionario" filter="true" value="#{vendaBean.venda.funcionario}" converter="omnifaces.SelectItemsConverter" required="true"
+				requiredMessage="'Funcionário' é Obrigatório">
+					<f:selectItem noSelectionOption="true" itemLabel="Selecione uma Opção" />
+					<f:selectItems value="#{vendaBean.funcionarios}" var="cursorVenda" itemValue="#{cursorVenda}" itemLabel="#{cursorVenda.pessoa.nome}"/>
+				</p:selectOneMenu>
+
+				<p:outputLabel for="dt" value="Data:" />
+				<p:calendar id="dt" value="#{vendaBean.venda.horario}" locale="pt_BR" size="10" required="true" requiredMessage="'Data' é obrigatório" />
+
+				<p:outputLabel for="valorT"  value="Valor Total:" />
+				<p:inputText id="valorT" maxlength="7" size="10" value="#{vendaBean.venda.valorTotal}" required="true" requiredMessage="'Valor Total é Obrigatório'"
+				 validatorMessage="Digite um valor entre '0,01' e '9999.99'" converterMessage="Informe um valor Válido para Preço total" >
+					<f:validateDoubleRange minimum="0.01" maximum="9999.99" />
+					<f:convertNumber locale="pt_BR" minFractionDigits="2" />
+				</p:inputText>
+
+
+			</p:panelGrid>
+			<h:panelGrid columns="2">
+				<p:commandButton value="Salvar" actionListener="#{vendaBean.salvar}" update=":msg :frmListagem:tabela :frmCadastro:pnlCadastro"/>
+				<p:commandButton value="Fechar" oncomplete="PF('dlgVenda').hide()" />
+			</h:panelGrid>
+		</h:form>
+	</p:dialog>
+</h:body>
+</html>

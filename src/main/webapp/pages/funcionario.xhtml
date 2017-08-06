@@ -1,0 +1,121 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
+<!-- substituir a TAG HTML por ui composition para que utilize o template  -->
+<ui:composition xmlns="http://www.w3.org/1999/xhtml"
+	xmlns:h="http://xmlns.jcp.org/jsf/html"
+	xmlns:p="http://primefaces.org/ui"
+	xmlns:f="http://xmlns.jcp.org/jsf/core"
+	xmlns:ui="http://xmlns.jcp.org/jsf/facelets"
+	template="/templates/modelo.xhtml">
+	
+	<!-- 	ui:define casa com o ui:insert, pega um código e injeta no ui:insert -->
+	<ui:define name="conteudo">
+	
+	<h:form id="frmListagem">
+		<p:panel header="Funcionário - Listagem">
+			<p:dataTable id="tabela" emptyMessage="Nenhum Registro Encontrado"
+				paginator="true" value="#{funcionarioBean.funcionarios}"
+				var="cursorFuncionario" rows="5">
+
+				<!-- 				Botão Novo -->
+
+				<f:facet name="header">
+					<p:commandButton value="Novo"
+						oncomplete="PF('dlgFuncionario').show()"
+						actionListener="#{funcionarioBean.novo}"
+						update=":msg :frmCadastro:pnlCadastro">
+						<!-- 						resolver o problema de estado inválido ao invalidar o campo obrigatório os campos ficam vermelho mesmo após clicar em novo -->
+						<f:actionListener
+							type="org.omnifaces.eventlistener.ResetInputAjaxActionListener" />
+					</p:commandButton>
+				</f:facet>
+
+				<p:column headerText="Nome"
+					sortBy="#{cursorFuncionario.pessoa.nome}"
+					filterBy="#{cursorFuncionario.pessoa.nome}">
+					<h:outputText value="#{cursorFuncionario.pessoa.nome}" />
+				</p:column>
+
+				<p:column headerText="CPF" sortBy="#{cursorFuncionario.pessoa.cpf}"
+					filterBy="#{cursorFuncionario.pessoa.cpf}">
+					<h:outputText value="#{cursorFuncionario.pessoa.cpf}" />
+				</p:column>
+
+				<p:column headerText="Carteira de Trabalho">
+					<h:outputText value="#{cursorFuncionario.carteiraTrabalho}" />
+				</p:column>
+
+				<p:column headerText="Data de Admissão">
+					<h:outputText value="#{cursorFuncionario.dataAdmissao}">
+						<f:convertDateTime locale="pt_BR" />
+					</h:outputText>
+				</p:column>
+
+				<!-- 				Botão Opções -->
+
+				<p:column headerText="Opções">
+
+					<p:commandButton icon="ui-icon-trash"
+						actionListener="#{funcionarioBean.excluir}"
+						update=":msg :frmListagem:tabela">
+						<p:confirm header="Confirmação"
+							message="Deseja EXCLUIR o Funcionário ?" icon="ui-icon-alert" />
+						<f:attribute name="funcionarioSelecionado"
+							value="#{cursorFuncionario}" />
+					</p:commandButton>
+
+					<!-- 					Botão Editar -->
+
+					<p:commandButton icon="ui-icon-pencil"
+						actionListener="#{funcionarioBean.editar}"
+						oncomplete="PF('dlgFuncionario').show()"
+						update=":msg :frmCadastro:pnlCadastro">
+						<f:attribute name="funcionarioSelecionado"
+							value="#{cursorFuncionario}" />
+						<!-- 						resolver o problema de estado inválido ao invalidar o campo obrigatório os campos ficam vermelho mesmo após clicar em novo -->
+						<f:actionListener
+							type="org.omnifaces.eventlistener.ResetInputAjaxActionListener" />
+					</p:commandButton>
+				</p:column>
+			</p:dataTable>
+
+			<!-- 			Diálogo de Confirmação -->
+
+			<p:confirmDialog global="true">
+				<p:commandButton value="Sim" type="button"
+					styleClass="ui-confirmdialog-yes" icon="ui-icon-check" />
+				<p:commandButton value="Não" type="button"
+					styleClass="ui-confirmdialog-no" icon="ui-icon-close" />
+			</p:confirmDialog>
+		</p:panel>
+	</h:form>
+
+	<p:dialog header="Funcionário - Cadastro" widgetVar="dlgFuncionario"
+		draggable="false" resizable="false" modal="true" closable="false">
+
+		<h:form id="frmCadastro">
+			<p:panelGrid id="pnlCadastro" columns="2">
+
+				<p:outputLabel for="pessoa" value="Pessoa:" />
+				<p:selectOneMenu id="pessoa" filter="true" required="true" value="#{funcionarioBean.funcionario.pessoa}" converter="omnifaces.SelectItemsConverter" requiredMessage="'Pessoa' é obrigatório" >
+					<f:selectItem noSelectionOption="true" itemLabel="Selecione uma Opção" />
+					<f:selectItems value="#{funcionarioBean.pessoas}" var="cursorPessoa" itemValue="#{cursorPessoa}" itemLabel="#{cursorPessoa.cpf} - #{cursorPessoa.nome} "/>
+				</p:selectOneMenu>
+
+				<p:outputLabel for="DtAd" value="Data de Admissão:" />
+				<p:calendar id="DtAd" value="#{funcionarioBean.funcionario.dataAdmissao}" locale="pt_BR" size="10" required="true" requiredMessage="'Data de Admissão' é obrigatório" />
+				
+
+				<p:outputLabel for="CTrabalho" value="Carteira de Trabalho:" />
+				<p:inputText id="CTrabalho" maxlength="15" size="30" value="#{funcionarioBean.funcionario.carteiraTrabalho}" required="true" requiredMessage="'Carteira de Trabalho' é obrigatório" />
+
+			</p:panelGrid>
+			<h:panelGrid columns="2">
+				<p:commandButton value="Salvar" actionListener="#{funcionarioBean.salvar}" update=":msg :frmListagem:tabela :frmCadastro:pnlCadastro" />
+				<p:commandButton value="Fechar"
+					oncomplete="PF('dlgFuncionario').hide()" />
+			</h:panelGrid>
+		</h:form>
+	</p:dialog>
+</ui:define>
+</ui:composition>
