@@ -8,6 +8,7 @@ import javax.faces.bean.ManagedBean;
 import javax.faces.bean.ViewScoped;
 import javax.faces.event.ActionEvent;
 
+import org.omnifaces.util.Faces;
 import org.omnifaces.util.Messages;
 
 import br.com.projeto.drogaria.dao.PessoaDAO;
@@ -103,7 +104,11 @@ public class UsuarioBean implements Serializable {
 			PessoaDAO pessoaDAO = new PessoaDAO();
 			pessoas = pessoaDAO.listar("nome");
 
-			Messages.addGlobalInfo("Cadastro Realizado Com Sucesso !");
+			/*
+			 * utilizando o Faces para tradução das mensagens com
+			 * getResourceBundle
+			 */
+			Messages.addGlobalInfo(Faces.getResourceBundle("msg").getString("usuarioSalvo"));
 
 		} catch (RuntimeException erro) {
 			Messages.addGlobalError("Ocorreu um erro ao Salvar !");

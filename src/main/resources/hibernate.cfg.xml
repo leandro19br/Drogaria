@@ -15,13 +15,18 @@
 
 
 
-		<!-- Configurações de Conexão com o Banco de Dados -->
+		<!-- Configurações de Conexão com o Banco de Dados alterada a conexão para 
+			fazer a atualização do banco em MySQL no Jelastic <property name="connection.driver_class">com.mysql.jdbc.Driver</property> 
+			<property name="connection.url">jdbc:mysql://node139362-sistemadrogaria.jelasticlw.com.br/Drogaria</property> -->
+		<!-- <property name="connection.driver_class">com.microsoft.sqlserver.jdbc.SQLServerDriver</property> 
+			<property name="connection.url">jdbc:sqlserver://127.0.0.1:1433;databaseName= 
+			Drogaria</property> -->
 
 		<property name="connection.driver_class">com.microsoft.sqlserver.jdbc.SQLServerDriver</property>
+		
+		<property name="connection.url">jdbc:sqlserver://127.0.0.1:1433;databaseName=Drogaria</property>
 
-		<property name="connection.url">jdbc:sqlserver://127.0.0.1:1433;databaseName= Drogaria</property>
-
-		<property name="connection.username">sa</property>
+		<property name="connection.username">santiago</property>
 
 		<property name="connection.password">santiago</property>
 
@@ -36,9 +41,9 @@
 		<!-- SQL dialect -->
 
 		<property name="dialect">org.hibernate.dialect.SQLServer2008Dialect</property>
-                                   
 
-                                
+
+
 
 		<!-- Gerenciamento do Contexto das Sessões -->
 
@@ -59,14 +64,14 @@
 
 
 		<!-- Cria as tabelas do banco de dados pode ser colocado create,update 
-			ou validate- compara aplicação com o que tem no banco-->
+			ou validate- compara aplicação com o que tem no banco -->
 
 		<property name="hbm2ddl.auto">update</property>
-		
+
 		<!-- Mapeamento das entidade tabelas do banco -->
 		<mapping class="br.com.projeto.drogaria.domain.Estado" />
 		<mapping class="br.com.projeto.drogaria.domain.Fabricante" />
-		
+
 		<mapping class="br.com.projeto.drogaria.domain.Cidade" />
 		<mapping class="br.com.projeto.drogaria.domain.Produto" />
 		<mapping class="br.com.projeto.drogaria.domain.Pessoa" />
@@ -78,7 +83,8 @@
 		<mapping class="br.com.projeto.drogaria.domain.Historico" />
 		<mapping class="br.com.projeto.drogaria.domain.Caixa" />
 		<mapping class="br.com.projeto.drogaria.domain.Movimentacao" />
-		
+		<mapping class="br.com.projeto.drogaria.domain.Menu" />
+
 	</session-factory>
 
 </hibernate-configuration>

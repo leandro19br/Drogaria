@@ -93,18 +93,22 @@ public class FabricanteService {
 		return jsonsaida;
 	}
 
-	// http://localhost:8080/Drogaria/rest/fabricante
-	@DELETE
-	public String excluir(String json) {
-		Gson gson = new Gson();
-		// recebe gson string e converte no tipo da classe
-		Fabricante fabricante = gson.fromJson(json, Fabricante.class);
-		// método Excluir
-		FabricanteDAO dao = new FabricanteDAO();
-		// pesquisa o fabricante antes de excluir
-		fabricante = dao.buscar(fabricante.getCodigo());
-		dao.excluir(fabricante);
+	/* Para excluir recebe um parâmetro que vem da URL que é o código */
 
+	// http://localhost:8080/Drogaria/rest/fabricante/{codigo}
+	// http://localhost:8080/Drogaria/rest/fabricante/10
+	@DELETE
+	@Path("{codigo}")
+	public String excluir(@PathParam("codigo") Integer codigo) {
+
+		// método Excluir
+		FabricanteDAO fabricanteDAO = new FabricanteDAO();
+		// pesquisa o fabricante antes de excluir
+		Fabricante fabricante = fabricanteDAO.buscar(codigo);
+		/* excluir fabricante */
+		fabricanteDAO.excluir(fabricante);
+
+		Gson gson = new Gson();
 		// fazendo a conversão novamente para retornar String com o objeto salvo
 		String jsonsaida = gson.toJson(fabricante);
 

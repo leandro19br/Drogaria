@@ -2,14 +2,17 @@ package br.com.projeto.drogaria.domain;
 
 import java.math.BigDecimal;
 import java.util.Date;
+import java.util.List;
 
 import javax.persistence.Column;
 import javax.persistence.Entity;
+import javax.persistence.FetchType;
 import javax.persistence.GeneratedValue;
 import javax.persistence.GenerationType;
 import javax.persistence.Id;
 import javax.persistence.JoinColumn;
 import javax.persistence.ManyToOne;
+import javax.persistence.OneToMany;
 import javax.persistence.Temporal;
 import javax.persistence.TemporalType;
 
@@ -36,6 +39,27 @@ public class Venda {
 	@ManyToOne
 	@JoinColumn(nullable = false)
 	private Funcionario funcionario;
+
+	/* uma venda pode ter vários itens */
+	/* carregar os filhos com base no pai na tela de vendaListagem */
+	/*
+	 * para poder carregar os produtos fetch = FetchType.EAGER por padrão é modo
+	 * lazy(lento)
+	 */
+	/*
+	 * @OneToMany precisa saber com que chave estrangeira ele se liga na tabela
+	 * de venda para isso é preciso colocar o mappedBy = "venda"
+	 */
+	@OneToMany(fetch = FetchType.EAGER, mappedBy = "venda")
+	private List<ItemVenda> intensVenda;
+
+	public List<ItemVenda> getIntensVenda() {
+		return intensVenda;
+	}
+
+	public void setIntensVenda(List<ItemVenda> intensVenda) {
+		this.intensVenda = intensVenda;
+	}
 
 	public Date getDataVenda() {
 		return horario;

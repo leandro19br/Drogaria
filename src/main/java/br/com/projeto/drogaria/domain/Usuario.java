@@ -2,12 +2,16 @@ package br.com.projeto.drogaria.domain;
 
 import javax.persistence.Column;
 import javax.persistence.Entity;
+import javax.persistence.EnumType;
+import javax.persistence.Enumerated;
 import javax.persistence.GeneratedValue;
 import javax.persistence.GenerationType;
 import javax.persistence.Id;
 import javax.persistence.JoinColumn;
 import javax.persistence.OneToOne;
 import javax.persistence.Transient;
+
+import br.com.projeto.drogaria.enumeracao.TipoUsuario;
 
 @Entity
 public class Usuario {
@@ -25,7 +29,11 @@ public class Usuario {
 	private String senhaSemCriptografia;
 
 	@Column(nullable = false)
-	private Character tipo;// gerente, atendente
+	private Character tipo;// gerente, atendente, balconista
+
+	@Column(nullable = false, length = 20)
+	@Enumerated(EnumType.STRING) // guardando enum como inteiro
+	private TipoUsuario tipoUsuario;
 
 	@Column(nullable = false)
 	private Boolean ativo;
@@ -33,6 +41,14 @@ public class Usuario {
 	@OneToOne
 	@JoinColumn(nullable = false)
 	private Pessoa pessoa;
+
+	public TipoUsuario getTipoUsuario() {
+		return tipoUsuario;
+	}
+
+	public void setTipoUsuario(TipoUsuario tipoUsuario) {
+		this.tipoUsuario = tipoUsuario;
+	}
 
 	public String getSenhaSemCriptografia() {
 		return senhaSemCriptografia;

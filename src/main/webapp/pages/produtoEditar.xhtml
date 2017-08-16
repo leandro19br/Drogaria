@@ -1,0 +1,73 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
+<html xmlns="http://www.w3.org/1999/xhtml"
+	xmlns:h="http://xmlns.jcp.org/jsf/html"
+	xmlns:p="http://primefaces.org/ui"
+	xmlns:f="http://xmlns.jcp.org/jsf/core">
+
+<!-- Metadata será chamado o método listar uma vez quando a página for renderizada -->
+<!-- 	utilizando o View Param para que a tela de listagem mande as informações para a tela de edição 
+name = nome que recebe para trafegar e o value = vem um código que será copiado no Bean
+esse código vem através da url através do paramentro?codigo=1 
+Como o View Param trablha como se fosse um componente de entrada, pode se usar o required para obrigar a colocar um código-->
+<f:metadata>
+	<f:viewParam name="codigo" value="#{produtoBean2.codigoProduto}" required="true" requiredMessage="O campo Código do Produto é obrigatório"/>
+	<f:viewAction action="#{produtoBean2.carregarEdição}"/>
+</f:metadata>	
+	
+<h:head>
+	<meta http-equiv="Content-Type" content="text/html; charset=UTF-8" />
+	<title>Produto</title>
+</h:head>
+<h:body>
+	<p:growl id="msg"/>
+	<h:form id="frmCadastro">
+
+			<!-- 				para verificar um erro de conversão utiliza- se converterMessage -->
+			<p:panel header="Produto Editar">
+			<p:panelGrid id="pnlCadastro" columns="2">
+
+				<p:outputLabel value="Descrição:" for="descricao" />
+				<p:inputText id="descricao" maxlength="50" size="30"
+					value="#{produtoBean2.produto.descricao}" required="true"
+					requiredMessage="'Descrição' Obrigatório" />
+
+				<p:outputLabel value="Quantidade:" for="qtda" />
+				<p:inputText id="qtda" maxlength="5" size="10"
+					value="#{produtoBean2.produto.quantidade}" required="true"
+					requiredMessage="'Quantidade' Obrigatório"
+					converterMessage="Informe um valor Válido para Quantidade !"
+					validatorMessage="Digite uma Quantidade entre '0' e '99' !">
+					<f:validateLongRange minimum="0" maximum="99" />
+				</p:inputText>
+
+				<p:outputLabel value="Preço:" for="preco" />
+				<p:inputText id="preco" maxlength="7" size="10"
+					value="#{produtoBean2.produto.preco}" required="true"
+					requiredMessage="'Preço' Obrigatório"
+					converterMessage="Informe um valor Válido para Preço !"
+					validatorMessage="Digite um valor entre '0,01' e '9999.99' ">
+					<f:validateDoubleRange minimum="0.01" maximum="9999.99" />
+					<f:convertNumber locale="pt_BR" minFractionDigits="2" />
+				</p:inputText>
+				
+				<p:outputLabel value="Fabricante:" />
+				<p:selectOneMenu filter="true" value="#{produtoBean2.produto.fabricante}"
+					converter="omnifaces.SelectItemsConverter" required="true"
+					requiredMessage="Fabricante Obrigatório">
+					<f:selectItem noSelectionOption="true"
+						itemLabel="Selecione uma Opção" />
+					<f:selectItems value="#{produtoBean2.fabricantes}"
+						var="cursorFabricantes" itemValue="#{cursorFabricantes}"
+						itemLabel="#{cursorFabricantes.descricao}" />
+				</p:selectOneMenu>
+				</p:panelGrid>
+			</p:panel>
+			
+			<h:panelGrid columns="2">
+				<p:commandButton value="Editar" update=":msg" />
+				<p:button value="Voltar" outcome="/pages/produtoListagem.xhtml" />
+			</h:panelGrid>
+		</h:form>
+</h:body>
+</html>

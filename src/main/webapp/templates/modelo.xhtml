@@ -9,6 +9,10 @@
 	<meta http-equiv="Content-Type" content="text/html; charset=UTF-8" />
 	<title>Sistema para Drogaria</title>
 	<h:outputStylesheet library="css" name="styles.css"/>
+	
+<!-- 	árae reservada para colocar o metadata -->
+	<ui:insert name="metadata"/>
+	
 </h:head>
 <h:body>
 		<!-- 	<p:message/> Growl foi colocado no template pois todas as páginas utilizam  -->
@@ -25,11 +29,18 @@
 			<div id="cabecalho" class="divCabecalho">
 				<h:form id="frmMenu">	
 <!-- 				Menu do template -->
-				<p:menubar>
+
+<!-- 				utilizando menu Dinâmico -->
+
+						<p:menubar model="#{menuBean.menuModel}"/>	
+
+
+			<!-- 	<p:menubar>
 					<p:submenu label="Arquivo">
-						<p:menuitem value="Sair"/>
-					</p:submenu>	
-					<p:submenu label="Cadastro">
+						<p:menuitem value="Sair" actionListener="#{autenticacaoBean.deslogar}"/>
+					</p:submenu>
+						
+					<p:submenu label="Cadastro" rendered="#{autenticacaoBean.temPermissao(['A','G'])}">
 						<p:menuitem value="Estado" url="/pages/estados.xhtml"/>
 						<p:menuitem value="Cidade" url="/pages/cidade.xhtml"/>
 						<p:menuitem value="Fabricante" url="/pages/fabricante.xhtml"/>
@@ -37,15 +48,19 @@
 						<p:menuitem value="Pessoa" url="/pages/pessoa.xhtml" />
 						<p:menuitem value="Cliente" url="/pages/cliente.xhtml" />
 						<p:menuitem value="Funcionário" url="/pages/funcionario.xhtml" />
+						<p:menuitem value="Usuário" url="	" />
 					</p:submenu>
 					<p:submenu label="Movimentações">
 						<p:menuitem value="Venda" url="/pages/venda.xhtml" />
+						<p:menuitem value="Listagem de Vendas " url="/pages/vendaListagem.xhtml" />
 						<p:menuitem value="Histórico" url="/pages/historico.xhtml" />
 					</p:submenu>
 					<p:submenu label="Ajuda">
 						<p:menuitem value="Sobre"/>
 					</p:submenu>
-				</p:menubar>
+				</p:menubar> -->
+				
+				
 				</h:form>
 			</div>
 

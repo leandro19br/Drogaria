@@ -18,7 +18,7 @@ ORDER BY "Estado".nome DESC]]>
 		<band height="80" splitType="Stretch">
 			<image hAlign="Center" vAlign="Top">
 				<reportElement positionType="FixRelativeToBottom" x="0" y="0" width="560" height="80" uuid="62ae0730-7cad-4fa1-8a6a-548a3df6291b"/>
-				<imageExpression><![CDATA["logo.png"]]></imageExpression>
+				<imageExpression><![CDATA["C:/Users/leand/workspace/Drogaria/src/main/webapp/resources/images/logo.png"]]></imageExpression>
 			</image>
 		</band>
 	</title>

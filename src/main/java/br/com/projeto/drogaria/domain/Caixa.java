@@ -8,6 +8,8 @@ import javax.persistence.Entity;
 import javax.persistence.GeneratedValue;
 import javax.persistence.GenerationType;
 import javax.persistence.Id;
+import javax.persistence.JoinColumn;
+import javax.persistence.ManyToOne;
 import javax.persistence.Temporal;
 import javax.persistence.TemporalType;
 
@@ -29,6 +31,10 @@ public class Caixa {
 
 	@Column(nullable = false, precision = 7, scale = 2)
 	private BigDecimal valorAbertura;
+
+	@ManyToOne // chave estrangeira
+	@JoinColumn(nullable = false)
+	private Funcionario funcionario;
 
 	public Integer getCodigo() {
 		return codigo;
@@ -60,6 +66,22 @@ public class Caixa {
 
 	public void setValor(BigDecimal valor) {
 		this.valorAbertura = valor;
+	}
+
+	public Funcionario getFuncionario() {
+		return funcionario;
+	}
+
+	public void setFuncionario(Funcionario funcionario) {
+		this.funcionario = funcionario;
+	}
+
+	public BigDecimal getValorAbertura() {
+		return valorAbertura;
+	}
+
+	public void setValorAbertura(BigDecimal valorAbertura) {
+		this.valorAbertura = valorAbertura;
 	}
 
 }

@@ -9,11 +9,12 @@ import org.junit.Test;
 
 import br.com.projeto.drogaria.domain.Pessoa;
 import br.com.projeto.drogaria.domain.Usuario;
+import br.com.projeto.drogaria.enumeracao.TipoUsuario;
 
 public class UsuarioDAOTeste {
 
 	@Test
-	@Ignore
+	// @Ignore
 	public void salvar() {
 
 		Integer codigoPessoa = 3;
@@ -33,7 +34,9 @@ public class UsuarioDAOTeste {
 			SimpleHash hash = new SimpleHash("md5", usuario.getSenhaSemCriptografia());
 			/* senha será gravada no banco com hexadecimal */
 			usuario.setSenha(hash.toHex());
-			usuario.setTipo('A');
+			usuario.setTipo('G');
+			/* não utiliza mais caracter e sim a constante */
+			usuario.setTipoUsuario(TipoUsuario.GERENTE);
 			usuario.setAtivo(false);
 			usuario.setPessoa(pessoa);
 
@@ -151,6 +154,7 @@ public class UsuarioDAOTeste {
 	}
 
 	@Test
+	@Ignore
 	public void autenticar() {
 		/* passar o cpf e senha do usuário */
 		String cpf = "265.141.544-44";

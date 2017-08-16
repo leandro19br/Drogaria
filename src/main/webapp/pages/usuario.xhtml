@@ -13,14 +13,14 @@
 		
 	<h:form id="frmListagem">
 		
-		<p:panel id="pnlListagem" header="Usuário - Listagem">
+		<p:panel id="pnlListagem" header="#{msg.cabecalhoPainel}">
 			<p:dataTable id="tabela" emptyMessage="Nenhum Registro Encontrado"
 				paginator="true" value="#{usuario.usuarios}" var="cursorUsuario" rows="5">
 				
 <!-- 				Botão Novo -->
 				
 				<f:facet name="header">
-					<p:commandButton value="Novo" oncomplete="PF('dlgUsuario').show()" actionListener="#{usuario.novo}" update=":msg :frmCadastro:pnlCadastro"
+					<p:commandButton value="#{msg.botaoNovo}" oncomplete="PF('dlgUsuario').show()" actionListener="#{usuario.novo}" update=":msg :frmCadastro:pnlCadastro"
 					 >
 						<!-- 						resolver o problema de estado inválido ao invalidar o campo obrigatório os campos ficam vermelho mesmo após clicar em novo -->
 						<f:actionListener
@@ -28,7 +28,7 @@
 					</p:commandButton>
 				</f:facet>
 
-				<p:column headerText="Nome" filterBy="#{cursorUsuario.pessoa.nome}" sortBy="#{cursorUsuario.pessoa.nome}">
+				<p:column headerText="#{msg.cabecalhoNome}" filterBy="#{cursorUsuario.pessoa.nome}" sortBy="#{cursorUsuario.pessoa.nome}">
 					<h:outputText value="#{cursorUsuario.pessoa.nome}" />
 				</p:column>
 				
@@ -37,8 +37,12 @@
 					<h:outputText value="#{cursorUsuario.pessoa.cpf}" />
 				</p:column>
 					
-				<p:column headerText="Tipo">
-					<h:outputText value="#{cursorUsuario.tipoFormatado}" />
+<!-- 				<p:column headerText="Tipo"> -->
+<!-- 					<h:outputText value="#{cursorUsuario.tipoFormatado}" /> -->
+<!-- 				</p:column> -->
+				
+				<p:column headerText="Tipo" sortBy="#{cursorUsuario.tipoUsuario.toString()}">
+					<h:outputText value="#{cursorUsuario.tipoUsuario.toString()}" />
 				</p:column>
 
 				<p:column headerText="Ativo">
@@ -105,6 +109,13 @@
 					<f:selectItem itemValue="A" itemLabel="Administrador"/>
 					<f:selectItem itemValue="B" itemLabel="Balconista"/>
 					<f:selectItem itemValue="G" itemLabel="Gerente"/>
+				</p:selectOneRadio>
+				
+				<p:outputLabel for="tipoUsuario" value="Tipo do Usuário:" />
+				<p:selectOneRadio id="tipoUsuario" value="#{usuario.usuario.tipoUsuario}" required="true" requiredMessage="'Tipo' é Campo Obrigatório">
+					<f:selectItem itemValue="ADMINISTRADOR" itemLabel="Administrador"/>
+					<f:selectItem itemValue="BALCONISTA" itemLabel="Balconista"/>
+					<f:selectItem itemValue="GERENTE" itemLabel="Gerente"/>
 				</p:selectOneRadio>
 				
 

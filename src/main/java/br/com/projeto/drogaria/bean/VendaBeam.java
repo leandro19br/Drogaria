@@ -6,7 +6,6 @@ import java.util.ArrayList;
 import java.util.Date;
 import java.util.List;
 
-import javax.annotation.PostConstruct;
 import javax.faces.bean.ManagedBean;
 import javax.faces.bean.ViewScoped;
 import javax.faces.event.ActionEvent;
@@ -33,7 +32,16 @@ public class VendaBeam implements Serializable {
 	private List<Cliente> clientes;
 	private List<Funcionario> funcionarios;
 	private List<ItemVenda> itensVenda;
+	private List<Venda> vendas;
 	private Venda venda;
+
+	public List<Venda> getVendas() {
+		return vendas;
+	}
+
+	public void setVendas(List<Venda> vendas) {
+		this.vendas = vendas;
+	}
 
 	public Venda getVenda() {
 		return venda;
@@ -83,7 +91,7 @@ public class VendaBeam implements Serializable {
 		this.produtos = produtos;
 	}
 
-	@PostConstruct
+	// @PostConstruct
 	public void novo() {
 
 		try {
@@ -102,6 +110,22 @@ public class VendaBeam implements Serializable {
 			Messages.addGlobalError("Ocorreu um erro ao Listar os Produtos");
 			erro.printStackTrace();
 		}
+	}
+
+	public void listar() {
+
+		try {
+
+			/* criando o VendaDAO */
+
+			VendaDAO vendaDAO = new VendaDAO();
+			vendas = vendaDAO.listar("horario");// listar venda
+
+		} catch (RuntimeException erro) {
+			Messages.addGlobalError("Ocorreu um erro ao Listar as Vendas");
+			erro.printStackTrace();
+		}
+
 	}
 
 	public void adicionar(ActionEvent evento) {
@@ -172,6 +196,17 @@ public class VendaBeam implements Serializable {
 		// chamando o método para calucular o valor
 		calcular();
 
+	}
+
+	/* atualização do preço de venda do item quando a quantidade for editado */
+	public void atuaslizarPrecoParcial() {
+		/* fazendo um for para calcular item a item todos os preco de venda */
+		for (ItemVenda itemVenda : itensVenda) {
+			itemVenda.setValorParcial(
+					itemVenda.getProduto().getPreco().multiply(new BigDecimal(itemVenda.getQuantidade())));
+			/* chamando o método calcular() para reclacular o preço total */
+		}
+		this.calcular();
 	}
 
 	public void remover(ActionEvent evento) {

@@ -10,147 +10,166 @@
 
 	<!-- 	ui:define casa com o ui:insert, pega um código e injeta no ui:insert -->
 	<ui:define name="conteudo">
-	
-	<h:form id="frmListagem">
-		<p:panel header="Produto - Listagem">
-			<p:dataTable id="tabela" emptyMessage="Nenhum Registro Encontrado"
-				paginator="true" value="#{produto.produtos}" var="cursorProduto"
-				rows="5">
 
-				<!-- 				Botão Novo -->
+		<h:form id="frmListagem">
+			<p:panel header="Produto - Listagem">
+				<p:dataTable id="tabela" emptyMessage="Nenhum Registro Encontrado"
+					paginator="true" value="#{produto.produtos}" var="cursorProduto"
+					rows="5">
 
-				<f:facet name="header">
-					
-					<p:commandButton icon="ui-icon-plus" oncomplete="PF('dlgProduto').show()"
-						actionListener="#{produto.novo}" update=":frmCadastro:pnlCadastro">
-						<!-- 						resolver o problema de estado inválido ao invalidar o campo obrigatório os campos ficam vermelho mesmo após clicar em novo -->
-						<f:actionListener
-							type="org.omnifaces.eventlistener.ResetInputAjaxActionListener" />
-					</p:commandButton>
-					
-					<p:commandButton icon="ui-icon-print" actionListener="#{produto.imprimir}"/>
-						
-				</f:facet>
+					<!-- 				Botão Novo -->
 
-				<p:column headerText="Descrição" filterMatchMode="contains" sortBy="#{cursorProduto.descricao}"
-					filterBy="#{cursorProduto.descricao}">
-					<h:outputText value="#{cursorProduto.descricao}" />
-				</p:column>
+					<f:facet name="header">
 
-				<p:column headerText="Quantidade">
-					<h:outputText value="#{cursorProduto.quantidade}" />
-				</p:column>
+						<p:commandButton icon="ui-icon-plus"
+							oncomplete="PF('dlgProduto').show()"
+							actionListener="#{produto.novo}"
+							update=":frmCadastro:pnlCadastro">
+							<!-- 						resolver o problema de estado inválido ao invalidar o campo obrigatório os campos ficam vermelho mesmo após clicar em novo -->
+							<f:actionListener
+								type="org.omnifaces.eventlistener.ResetInputAjaxActionListener" />
+						</p:commandButton>
 
-				<p:column headerText="Preço">
-					<h:outputText value="#{cursorProduto.preco}">
-						<f:convertNumber locale="pt_BR" minFractionDigits="2" />
-					</h:outputText>
-				</p:column>
+						<p:commandButton icon="ui-icon-print"
+							actionListener="#{produto.imprimir}" />
 
-				<p:column headerText="Fabricante" filterMatchMode="contains"
-				 sortBy="#{cursorProduto.fabricante.descricao}" filterBy="#{cursorProduto.fabricante.descricao}">
-					<h:outputText value="#{cursorProduto.fabricante.descricao}" />
-				</p:column>
+					</f:facet>
 
-				<p:column headerText="Opções">
+					<p:column headerText="Descrição" filterMatchMode="contains"
+						sortBy="#{cursorProduto.descricao}"
+						filterBy="#{cursorProduto.descricao}">
+						<h:outputText value="#{cursorProduto.descricao}" />
+					</p:column>
 
-					<!-- 					Botão Excluir -->
+					<p:column headerText="Quantidade">
+						<h:outputText value="#{cursorProduto.quantidade}" />
+					</p:column>
 
-					<p:commandButton icon="ui-icon-trash"
-						actionListener="#{produto.excluir}"
-						update=":msg :frmListagem:tabela">
-						<p:confirm header="Confirmação"
-							message="Deseja EXCLUIR o Produto ?" icon="ui-icon-alert" />
-						<f:attribute name="produtoSelecionado" value="#{cursorProduto}" />
-					</p:commandButton>
+					<p:column headerText="Preço">
+						<h:outputText value="#{cursorProduto.preco}">
+							<f:convertNumber locale="pt_BR" minFractionDigits="2" />
+						</h:outputText>
+					</p:column>
 
-					<!-- 					Botão Editar -->
+					<p:column headerText="Fabricante" filterMatchMode="contains"
+						sortBy="#{cursorProduto.fabricante.descricao}"
+						filterBy="#{cursorProduto.fabricante.descricao}">
+						<h:outputText value="#{cursorProduto.fabricante.descricao}" />
+					</p:column>
+					<!-- 				exibir a imagem do produto propriedade cache perde em peformance mas atualiza mais rápido  na URL, inserir endereço da imagens na url +
+					#{cursorProduto.codigo} para pegar o id da imagem. O endereço da imagem no C: foi definido no Server.xml que fica na pasta Server do Eclipse	-->
+					<p:column headerText="Foto">
+						<p:graphicImage cache="false" height="50" width="50"
+							url="http://localhost:8080/imagens/#{cursorProduto.codigo}.png" />
+					</p:column>
 
-					<p:commandButton icon="ui-icon-pencil"
-						actionListener="#{produto.editar}"
-						oncomplete="PF('dlgProduto').show()"
-						update=":msg :frmCadastro:pnlCadastro">
-						<f:attribute name="produtoSelecionado" value="#{cursorProduto}" />
-						<!-- 						resolver o problema de estado inválido ao invalidar o campo obrigatório os campos ficam vermelho mesmo após clicar em novo -->
-						<f:actionListener
-							type="org.omnifaces.eventlistener.ResetInputAjaxActionListener" />
-					</p:commandButton>
+					<p:column headerText="Opções">
 
-				</p:column>
-			</p:dataTable>
+						<!-- 					Botão Excluir -->
 
-			<!-- 			Diálogo de Confirmação -->
+						<p:commandButton icon="ui-icon-trash"
+							actionListener="#{produto.excluir}"
+							update=":msg :frmListagem:tabela">
+							<p:confirm header="Confirmação"
+								message="Deseja EXCLUIR o Produto ?" icon="ui-icon-alert" />
+							<f:attribute name="produtoSelecionado" value="#{cursorProduto}" />
+						</p:commandButton>
 
-			<p:confirmDialog global="true">
-				<p:commandButton value="Sim" type="button"
-					styleClass="ui-confirmdialog-yes" icon="ui-icon-check" />
-				<p:commandButton value="Não" type="button"
-					styleClass="ui-confirmdialog-no" icon="ui-icon-close" />
-			</p:confirmDialog>
+						<!-- 					Botão Editar -->
 
-		</p:panel>
-	</h:form>
+						<p:commandButton icon="ui-icon-pencil"
+							actionListener="#{produto.editar}"
+							oncomplete="PF('dlgProduto').show()"
+							update=":msg :frmCadastro:pnlCadastro">
+							<f:attribute name="produtoSelecionado" value="#{cursorProduto}" />
+							<!-- 						resolver o problema de estado inválido ao invalidar o campo obrigatório os campos ficam vermelho mesmo após clicar em novo -->
+							<f:actionListener
+								type="org.omnifaces.eventlistener.ResetInputAjaxActionListener" />
+						</p:commandButton>
+						<!-- 					Botão para downlaods importante colocar ajax = false para terminar o carregamento da foto-->
+						<p:commandButton icon="ui-icon-arrowthick-1-s"
+							actionListener="#{produto.download}" ajax="false">
+							<f:attribute name="produtoSelecionado" value="#{cursorProduto}" />
+							<p:fileDownload value="#{produto.foto}" />
+						</p:commandButton>
+					</p:column>
+				</p:dataTable>
 
-	<p:dialog header="Produto - Cadastro" widgetVar="dlgProduto"
-		draggable="true" resizable="false" modal="true" closable="false">
+				<!-- 			Diálogo de Confirmação -->
 
-		<h:form id="frmCadastro" enctype="multipart/form-data">
+				<p:confirmDialog global="true">
+					<p:commandButton value="Sim" type="button"
+						styleClass="ui-confirmdialog-yes" icon="ui-icon-check" />
+					<p:commandButton value="Não" type="button"
+						styleClass="ui-confirmdialog-no" icon="ui-icon-close" />
+				</p:confirmDialog>
 
-			<!-- 				para verificar um erro de conversão utiliza- se converterMessage -->
-
-			<p:panelGrid id="pnlCadastro" columns="2">
-
-				<p:outputLabel value="Descrição:" for="descricao" />
-				<p:inputText id="descricao" maxlength="50" size="30"
-					value="#{produto.produto.descricao}" required="true"
-					requiredMessage="'Descrição' Obrigatório" />
-
-				<p:outputLabel value="Quantidade:" for="qtda" />
-				<p:inputText id="qtda" maxlength="5" size="10"
-					value="#{produto.produto.quantidade}" required="true"
-					requiredMessage="'Quantidade' Obrigatório"
-					converterMessage="Informe um valor Válido para Quantidade !"
-					validatorMessage="Digite uma Quantidade entre '0' e '99' !">
-					<f:validateLongRange minimum="0" maximum="99" />
-				</p:inputText>
-
-				<p:outputLabel value="Preço:" for="preco" />
-				<p:inputText id="preco" maxlength="7" size="10"
-					value="#{produto.produto.preco}" required="true"
-					requiredMessage="'Preço' Obrigatório"
-					converterMessage="Informe um valor Válido para Preço !"
-					validatorMessage="Digite um valor entre '0,01' e '9999.99' ">
-					<f:validateDoubleRange minimum="0.01" maximum="9999.99" />
-					<f:convertNumber locale="pt_BR" minFractionDigits="2" />
-				</p:inputText>
-				
-				<p:outputLabel value="Fabricante:" />
-				<p:selectOneMenu filter="true" value="#{produto.produto.fabricante}"
-					converter="omnifaces.SelectItemsConverter" required="true"
-					requiredMessage="Fabricante Obrigatório">
-					<f:selectItem noSelectionOption="true"
-						itemLabel="Selecione uma Opção" />
-					<f:selectItems value="#{produto.fabricantes}"
-						var="cursorFabricantes" itemValue="#{cursorFabricantes}"
-						itemLabel="#{cursorFabricantes.descricao}" />
-				</p:selectOneMenu>
-
-				<p:outputLabel for="foto" value="Foto:" />
-				<p:fileUpload id="foto" mode="advanced"
-					fileUploadListener="#{produto.upload}" update=":msg :frmCadastro:foto" auto="true" />
-
-				<p:outputLabel for="foto" value="Foto:" />
-				<p:graphicImage value="#{imagemBean.foto}">
-					<f:param name="caminho" value="#{produto.produto.caminho}" />
-				</p:graphicImage>
-
-			</p:panelGrid>
-			<h:panelGrid columns="2">
-				<p:commandButton value="Salvar" actionListener="#{produto.salvar}"
-					update=":msg :frmListagem:tabela :frmCadastro:pnlCadastro" />
-				<p:commandButton value="Fechar" oncomplete="PF('dlgProduto').hide()" />
-			</h:panelGrid>
+			</p:panel>
 		</h:form>
-	</p:dialog>
-</ui:define>
+
+		<p:dialog header="Produto - Cadastro" widgetVar="dlgProduto"
+			draggable="true" resizable="false" modal="true" closable="false">
+
+			<h:form id="frmCadastro" enctype="multipart/form-data">
+
+				<!-- 				para verificar um erro de conversão utiliza- se converterMessage -->
+
+				<p:panelGrid id="pnlCadastro" columns="2">
+
+					<p:outputLabel value="Descrição:" for="descricao" />
+					<p:inputText id="descricao" maxlength="50" size="30"
+						value="#{produto.produto.descricao}" required="true"
+						requiredMessage="'Descrição' Obrigatório" />
+
+					<p:outputLabel value="Quantidade:" for="qtda" />
+					<p:inputText id="qtda" maxlength="5" size="10"
+						value="#{produto.produto.quantidade}" required="true"
+						requiredMessage="'Quantidade' Obrigatório"
+						converterMessage="Informe um valor Válido para Quantidade !"
+						validatorMessage="Digite uma Quantidade entre '0' e '99' !">
+						<f:validateLongRange minimum="0" maximum="99" />
+					</p:inputText>
+
+					<p:outputLabel value="Preço:" for="preco" />
+					<p:inputText id="preco" maxlength="7" size="10"
+						value="#{produto.produto.preco}" required="true"
+						requiredMessage="'Preço' Obrigatório"
+						converterMessage="Informe um valor Válido para Preço !"
+						validatorMessage="Digite um valor entre '0,01' e '9999.99' ">
+						<f:validateDoubleRange minimum="0.01" maximum="9999.99" />
+						<f:convertNumber locale="pt_BR" minFractionDigits="2" />
+					</p:inputText>
+
+					<p:outputLabel value="Fabricante:" />
+					<p:selectOneMenu filter="true"
+						value="#{produto.produto.fabricante}"
+						converter="omnifaces.SelectItemsConverter" required="true"
+						requiredMessage="Fabricante Obrigatório">
+						<f:selectItem noSelectionOption="true"
+							itemLabel="Selecione uma Opção" />
+						<f:selectItems value="#{produto.fabricantes}"
+							var="cursorFabricantes" itemValue="#{cursorFabricantes}"
+							itemLabel="#{cursorFabricantes.descricao}" />
+					</p:selectOneMenu>
+
+					<p:outputLabel for="foto" value="Foto:" />
+					<p:fileUpload id="foto" mode="advanced"
+						fileUploadListener="#{produto.upload}"
+						update=":msg :frmCadastro:foto" auto="true" />
+
+					<p:outputLabel for="foto" value="Foto:" />
+					<p:graphicImage value="#{imagemBean.foto}">
+						<f:param name="caminho" value="#{produto.produto.caminho}" />
+					</p:graphicImage>
+
+				</p:panelGrid>
+				<h:panelGrid columns="2">
+					<p:commandButton value="Salvar" actionListener="#{produto.salvar}"
+						update=":msg :frmListagem:tabela :frmCadastro:pnlCadastro" />
+					<p:commandButton value="Fechar"
+						oncomplete="PF('dlgProduto').hide()" />
+				</h:panelGrid>
+			</h:form>
+		</p:dialog>
+	</ui:define>
 </ui:composition>

@@ -1,0 +1,28 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<faces-config version="2.2" xmlns="http://xmlns.jcp.org/xml/ns/javaee"
+	xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+	xsi:schemaLocation="http://xmlns.jcp.org/xml/ns/javaee http://xmlns.jcp.org/xml/ns/javaee/web-facesconfig_2_2.xsd">
+	<application />
+	
+	<!-- utilizei o jboss Tools para criar o faces, em em new-other e procurei 
+		por faces -->
+
+
+	<application>
+		<locale-config>
+			<default-locale>en</default-locale>
+		</locale-config>
+		<resource-bundle>
+			<base-name>mensagens</base-name>
+			<var>msg</var>
+		</resource-bundle>
+	</application>
+
+	<!-- Definição do PhaseListener da autenticação
+	<lifecycle>
+		<phase-listener>br.com.projeto.drogaria.util.AutenticacaoListener</phase-listener>
+
+	</lifecycle> -->
+	
+		
+</faces-config>

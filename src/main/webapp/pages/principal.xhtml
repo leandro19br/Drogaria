@@ -10,7 +10,8 @@
 	
 <!-- 	ui:define casa com o ui:insert, pega um código e injeta no ui:insert -->
 	<ui:define name="conteudo">
-		<h:outputText value="Bem Vindo ao Sistema de Gerenciamento de Drogarias" />
+<!-- 	Irá mostrar o nome do usuário logado #{autenticacaoBean.usuarioLogado.pessoa.nome}" -->
+				<h:outputText value="Bem Vindo #{autenticacaoBean.usuarioLogado.pessoa.nome}"/>
 <!-- 		Definir na aplicação que essa é a página principal no arquivo Web.xml -->
 	</ui:define>
 </ui:composition>

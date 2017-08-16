@@ -5,6 +5,7 @@
 	<property name="com.jaspersoft.studio.data.defaultdataadapter" value=" Data Adapter "/>
 	<parameter name="PRODUTO_DESC" class="java.lang.String"/>
 	<parameter name="FABRICANTE_DESC" class="java.lang.String"/>
+	<parameter name="CAMINHO_FOTO" class="java.lang.String"/>
 	<queryString language="SQL">
 		<![CDATA[SELECT "Produto".descricao AS pdescricao,
 	"Produto".preco,
@@ -27,7 +28,7 @@ ORDER BY "Produto".descricao ASC,
 		<band height="80" splitType="Stretch">
 			<image hAlign="Center" vAlign="Bottom">
 				<reportElement x="0" y="10" width="550" height="70" uuid="18e91da4-ee5d-40de-b006-f730f9152ad1"/>
-				<imageExpression><![CDATA["logo.png"]]></imageExpression>
+				<imageExpression><![CDATA[$P{CAMINHO_FOTO}]]></imageExpression>
 			</image>
 		</band>
 	</title>

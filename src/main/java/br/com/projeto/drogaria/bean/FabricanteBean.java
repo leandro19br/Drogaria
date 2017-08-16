@@ -17,7 +17,6 @@ import org.omnifaces.util.Messages;
 
 import com.google.gson.Gson;
 
-import br.com.projeto.drogaria.dao.FabricanteDAO;
 import br.com.projeto.drogaria.domain.Fabricante;
 
 @SuppressWarnings("serial")
@@ -137,13 +136,39 @@ public class FabricanteBean implements Serializable {
 	public void excluir(ActionEvent evento) {
 
 		try {
-
+			/* pega o fabricante que vai ser deletado */
 			fabricante = (Fabricante) evento.getComponent().getAttributes().get("fabricanteSelecionado");
-			FabricanteDAO dao = new FabricanteDAO();
-			dao.excluir(fabricante);
-			fabricantes = dao.listar();
+			// 1 - criar cliente
+			Client cliente = ClientBuilder.newClient();
+			/*
+			 * 2 - definindo caminho do serviço + o código do fabricante que
+			 * será deletado utilizando o .path que é amarrado ao path do
+			 * FabricanteServive
+			 */
+			/*
+			 * O PRIMEIRO CAMINHO SE REFERE AO
+			 * http://localhost:8080/Drogaria/rest/fabricante sem o código
+			 */
+			WebTarget caminho = cliente.target("http://localhost:8080/Drogaria/rest/fabricante");
+			/*
+			 * o CaminhoExcluir vai exibir o seguinte
+			 * http://localhost:8080/Drogaria/rest/fabricante/10 ,por exemplo
+			 * passando o código do fabricante que será excluído
+			 */
+			WebTarget caminhoExcluir = caminho.path("{codigo}").resolveTemplate("codigo", fabricante.getCodigo());
 
-			Messages.addGlobalInfo("Nome: " + fabricante.getDescricao());
+			/* fazendo uma chamada e deletando passando o caminhoExcluir */
+			caminhoExcluir.request().delete();
+
+			/* atualizar a lista */
+			String json = caminho.request().get(String.class);
+			Gson gson = new Gson();
+			// precisa converter esse json em um List
+			Fabricante[] vetor = gson.fromJson(json, Fabricante[].class);
+			// metodo para converter o vetor para Arraylist
+			fabricantes = Arrays.asList(vetor);
+
+			Messages.addGlobalInfo("Fabricante " + fabricante.getDescricao() + " Excluido com Sucesso!");
 
 		} catch (RuntimeException error) {
 			Messages.addGlobalInfo("Erro ao Excluir Fabricante");

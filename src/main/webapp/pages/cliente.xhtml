@@ -10,10 +10,10 @@
 
 	<!-- 	ui:define casa com o ui:insert, pega um código e injeta no ui:insert -->
 	<ui:define name="conteudo">
-
+<!-- 	Na tabela o id serve para atualizar com update e o widgetVar para utilizar o comando PF -->
 	<h:form id="frmListagem">
 		<p:panel id="pnlListagem" header="Cliente - Listagem">
-			<p:dataTable id="tabela" emptyMessage="Nenhum Registro Encontrado"
+			<p:dataTable id="tabela" widgetVar="tabela" emptyMessage="Nenhum Registro Encontrado"
 				paginator="true" value="#{cliente.clientes}" var="cursorCliente" rows="5">
 				
 <!-- 				Botão Novo -->
@@ -40,7 +40,14 @@
 					</h:outputText>
 				</p:column>
 				
-				<p:column headerText="Liberado">
+				<p:column headerText="Liberado" sortBy="#{cursorCliente.liberado}" filterBy="#{cursorCliente.liberado}">
+					<f:facet name="filter">
+						<p:selectOneButton onchange="PF('tabela').filter()">
+							<f:selectItem itemValue="" itemLabel="Todos"/>
+							<f:selectItem itemValue="true" itemLabel="Sim"/>
+							<f:selectItem itemValue="false" itemLabel="Não"/>
+						</p:selectOneButton>
+					</f:facet>
 					<p:selectBooleanCheckbox value="#{cursorCliente.liberado}" disabled="true"/>
 				</p:column>
 				

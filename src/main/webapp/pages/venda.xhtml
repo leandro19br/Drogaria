@@ -7,6 +7,14 @@
 	xmlns:f="http://xmlns.jcp.org/jsf/core"
 	xmlns:ui="http://xmlns.jcp.org/jsf/facelets"
 	template="/templates/modelo.xhtml">
+	
+	<!-- Definindo o metadata da aplicação -->
+	<ui:define name="metadata">
+		<f:metadata>
+<!-- 			Método para carregaar as vendas -->
+			<f:viewAction action="#{vendaBeam.novo}"></f:viewAction>
+		</f:metadata>
+	</ui:define>
 
 	<!-- 	ui:define casa com o ui:insert, pega um código e injeta no ui:insert -->
 	<ui:define name="conteudo">
@@ -53,11 +61,19 @@
 		</p:panel>
 
 		<!-- 		Painel Cesta de Compras -->
+		
+<!-- 		utilizando o comando p:remoteCommand para que funçoes javaScript possa chamar métodos do Bean para poder das update na tebela toda -->
+<!-- 		quando acabar a requisição o Ajax chama o RC -->
+		
+		<p:remoteCommand name="rc" actionListener="#{vendaBeam.atuaslizarPrecoParcial}"
+		update=":frm:tblCesta :frm:pnlFinalizacao"/>
 
 		<p:panel header="Cesta de Compras">
 			<p:dataTable id="tblCesta" emptyMessage="Nenhum Registro Encontrado"
 				paginator="true" value="#{vendaBeam.itensVenda}" var="cursorItem"
-				rows="3">
+				rows="3" paginatorPosition="buttom" editable="true" editMode="cell">
+				
+				<p:ajax event="cellEdit" oncomplete="rc()"/>
 
 				<p:column headerText="Descrição">
 					<h:outputText value="#{cursorItem.produto.descricao}" />
@@ -68,9 +84,19 @@
 						<f:convertNumber locale="pt_BR" minFractionDigits="2" />
 					</h:outputText>
 				</p:column>
-
+				
+<!-- 				Editando a quantidade através de digitação para trablhar com essa
+					propriedade é necessário colocar essas duas propriedades no dataTable editable="true" editMode="cell" -->
+									
 				<p:column headerText="Quantidade">
-					<h:outputText value="#{cursorItem.quantidade}" />
+					<p:cellEditor>
+						<f:facet name="output">
+							<h:outputText value="#{cursorItem.quantidade}" />
+						</f:facet>
+						<f:facet name="input">
+							<p:inputText value="#{cursorItem.quantidade}" />
+						</f:facet>		
+					</p:cellEditor>
 				</p:column>
 
 				<p:column headerText="Valor Parc.">
@@ -79,6 +105,8 @@
 					</h:outputText>
 				</p:column>
 
+<!-- 				Botão de opções -->
+				
 				<p:column headerText="Opções">
 					<p:commandButton icon="ui-icon-minus"
 						actionListener="#{vendaBeam.remover}"

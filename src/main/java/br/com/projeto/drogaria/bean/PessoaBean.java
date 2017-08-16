@@ -2,14 +2,20 @@ package br.com.projeto.drogaria.bean;
 
 import java.io.Serializable;
 import java.util.ArrayList;
+import java.util.Arrays;
 import java.util.List;
 
 import javax.annotation.PostConstruct;
 import javax.faces.bean.ManagedBean;
 import javax.faces.bean.ViewScoped;
 import javax.faces.event.ActionEvent;
+import javax.ws.rs.client.Client;
+import javax.ws.rs.client.ClientBuilder;
+import javax.ws.rs.client.WebTarget;
 
 import org.omnifaces.util.Messages;
+
+import com.google.gson.Gson;
 
 import br.com.projeto.drogaria.dao.CidadeDAO;
 import br.com.projeto.drogaria.dao.EstadoDAO;
@@ -91,14 +97,33 @@ public class PessoaBean implements Serializable {
 			pessoa = new Pessoa();
 			// para limpar o estado ao dar novo
 			estado = new Estado();
-
-			EstadoDAO estadoDAO = new EstadoDAO();
-			estados = estadoDAO.listar("nome");
 			/*
+			 * EstadoDAO estadoDAO = new EstadoDAO(); estados =
+			 * estadoDAO.listar("nome");
+			 * 
 			 * estanciando cidade vazia onde a lista estará vazia, pois a cidade
 			 * aparecerá de acordo com o estado
+			 * 
+			 * 
 			 */
 
+			/* utilizando Rest */
+
+			Client cliente = ClientBuilder.newClient();
+			// serve para passar os endereços do serviço
+			WebTarget caminho = cliente.target("http://localhost:8080/Drogaria/rest/estado");
+			/* dispara uma requisição GET do tipo json */
+			String json = caminho.request().get(String.class);
+			// precisa converter esse json em um List utilizando API Gson
+			Gson gson = new Gson();
+			/*
+			 * como não tem como fazer uma conversão em Array tem que converter
+			 * em um vetor e depois em list
+			 */
+			Estado[] vetor = gson.fromJson(json, Estado[].class);
+			// metodo para converter o vetor para Arraylist
+			estados = Arrays.asList(vetor);
+			/* carregando a lista de cidades */
 			cidades = new ArrayList<Cidade>();
 
 		} catch (RuntimeException erro) {
@@ -203,11 +228,26 @@ public class PessoaBean implements Serializable {
 		try {
 
 			if (estado != null) {
-				// System.out.println("Nome: " + estado.getNome() + "\nCódigo "
-				// + estado.getCodigo());
+				/*
+				 * carregando as cidades de acordo com o estado utilizando rest
+				 */
+				Client cliente = ClientBuilder.newClient();
+				// serve para passar os endereços do serviço
+				WebTarget caminho = cliente.target("http://localhost:8080/Drogaria/rest/cidade/{estadoCodigo}")
+						.resolveTemplate("estadoCodigo", estado.getCodigo());
+				/* dispara uma requisição GET do tipo json */
+				String json = caminho.request().get(String.class);
+				// precisa converter esse json em um List utilizando API Gson
+				Gson gson = new Gson();
 
-				CidadeDAO cidadeDAO = new CidadeDAO();
-				cidades = cidadeDAO.bucarPorEstado(estado.getCodigo());
+				Cidade[] vetor = gson.fromJson(json, Cidade[].class);
+				// metodo para converter o vetor para Arraylist
+				cidades = Arrays.asList(vetor);
+
+				/*
+				 * CidadeDAO cidadeDAO = new CidadeDAO(); cidades =
+				 * cidadeDAO.bucarPorEstado(estado.getCodigo());
+				 */
 
 			} else {
 				// caso seja null criara uma lista nova

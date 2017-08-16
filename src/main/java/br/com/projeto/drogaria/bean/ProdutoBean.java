@@ -1,6 +1,9 @@
 package br.com.projeto.drogaria.bean;
 
+import java.io.FileInputStream;
+import java.io.FileNotFoundException;
 import java.io.IOException;
+import java.io.InputStream;
 import java.io.Serializable;
 import java.nio.file.Files;
 import java.nio.file.Path;
@@ -20,6 +23,8 @@ import org.omnifaces.util.Faces;
 import org.omnifaces.util.Messages;
 import org.primefaces.component.datatable.DataTable;
 import org.primefaces.event.FileUploadEvent;
+import org.primefaces.model.DefaultStreamedContent;
+import org.primefaces.model.StreamedContent;
 import org.primefaces.model.UploadedFile;
 
 import br.com.projeto.drogaria.dao.FabricanteDAO;
@@ -41,6 +46,19 @@ public class ProdutoBean implements Serializable {
 	private List<Produto> produtos;
 	private Produto produto;
 	private List<Fabricante> fabricantes;
+	/*
+	 * atributo do primefaces para doenloads será amarrado em produto.xhtml
+	 * <p:fileDownload value="#{produto.foto}"/>
+	 */
+	private StreamedContent foto;
+
+	public StreamedContent getFoto() {
+		return foto;
+	}
+
+	public void setFoto(StreamedContent foto) {
+		this.foto = foto;
+	}
 
 	public List<Produto> getProdutos() {
 		return produtos;
@@ -264,6 +282,9 @@ public class ProdutoBean implements Serializable {
 			 * da memória onde está acontecendo a execução
 			 */
 			String caminho = Faces.getRealPath("/reports/cadproduto.jrxml");
+			/* buscando onde a foto está armazenada */
+			String caminhoFoto = Faces.getRealPath("/reports/logo.png");
+
 			/*
 			 * gerar os parâmetros de pesquisa extrutura de dados que guarda o
 			 * nome e o valor estrutura de mapa
@@ -271,6 +292,11 @@ public class ProdutoBean implements Serializable {
 			JasperCompileManager.compileReportToFile(caminho);
 
 			Map<String, Object> paramentros = new HashMap<>();
+
+			/* PASSANDO OS PARÂMETROS PARA PEGAR O CAMINHO DA FOTO */
+
+			paramentros.put("CAMINHO_FOTO", caminhoFoto);
+
 			/*
 			 * a conexão tem que ser do tipo connection e a que nos temos é a
 			 * session(hibernate) que precisa ser convertido. Essa conversão
@@ -311,4 +337,28 @@ public class ProdutoBean implements Serializable {
 
 	}
 
+	/* esse método será chamado no botão downlaod no produto.xhtml */
+	public void download(ActionEvent evento) {
+		/* pegando o produto selecionado para download */
+		produto = (Produto) evento.getComponent().getAttributes().get("produtoSelecionado");
+
+		/*
+		 * pegar os bytes = foto passando o endereço da imagam e vai ser
+		 * guardado em um inputstream
+		 */
+		try {
+			InputStream stream = new FileInputStream(
+					"C:/Users/leand/OneDrive/Documentos/Programação WEB com java/Uploads/" + produto.getCodigo()
+							+ ".png");
+			/*
+			 * criando a foto e estanciado passando os bytes da foto, passando o
+			 * Stream da foto, o tipo da imagem e o nome da imagem
+			 */
+			foto = new DefaultStreamedContent(stream, "image/png", produto.getCodigo() + ".png");
+		} catch (FileNotFoundException erro) {
+			Messages.addGlobalError("Ocorreu um erro no download da imagem");
+			erro.printStackTrace();
+		}
+
+	}
 }
