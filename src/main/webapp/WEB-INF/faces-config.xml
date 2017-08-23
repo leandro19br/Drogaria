@@ -18,11 +18,11 @@
 		</resource-bundle>
 	</application>
 
-	<!-- Definição do PhaseListener da autenticação
+	<!-- Definição do PhaseListener da autenticação	-->
 	<lifecycle>
 		<phase-listener>br.com.projeto.drogaria.util.AutenticacaoListener</phase-listener>
 
-	</lifecycle> -->
-	
+	</lifecycle> 
+
 		
 </faces-config>

@@ -5,7 +5,7 @@
  <!-- Nome da Aplicação -->
  <display-name>Drogaria</display-name>
  
-<!--  Localização do Fces Config -->
+<!--  Localização do Faces Config -->
  
  <context-param>
    <param-name>javax.faces.CONFIG_FILES</param-name>

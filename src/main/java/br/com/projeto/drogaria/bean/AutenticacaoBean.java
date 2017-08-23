@@ -7,6 +7,7 @@ import java.util.List;
 import javax.annotation.PostConstruct;
 import javax.faces.bean.ManagedBean;
 import javax.faces.bean.SessionScoped;
+import javax.servlet.http.HttpSession;
 
 import org.omnifaces.util.Faces;
 import org.omnifaces.util.Messages;
@@ -81,26 +82,28 @@ public class AutenticacaoBean implements Serializable {
 		}
 
 	}
+
+	public void deslogar() {
+
+		HttpSession autentica = Faces.getSession();
+		autentica.invalidate();
+		Faces.navigate("/pages/autentica.xhtml");
+
+	}
+
 	/*
-	 * public void deslogar() {
-	 * 
-	 * HttpSession autentica = Faces.getSession(); autentica.invalidate();
-	 * Faces.navigate("/pages/autentica.xhtml");
-	 * 
-	 * }
-	 * 
-	 * /* Método recebe um conjunto de permissões e verifica se o usuario logado
+	 * Método recebe um conjunto de permissões e verifica se o usuario logado
 	 * pode ver esse método será chamado no componente que voce quer dar
 	 * permissão por exemplo no model.xhtml
 	 */
 
 	public boolean temPermissao(List<String> permissoes) {
 
-		/*
-		 * fazendo uma varredura em todas as permissões que no caso são 3 A,G,B
-		 */
+		// fazendo uma varredura em todas as permissões que no caso são 3 A,G,B
+
 		for (String permissao : permissoes) {
-			/* transforma um texto em chararcter posição 0 */
+			// transforma um texto em chararcter posição 0
+
 			if (usuarioLogado.getTipo() == permissao.charAt(0)) {
 				return true;
 			}
